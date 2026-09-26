@@ -184,7 +184,7 @@ function PresetCard({
       </div>
 
       <p className="readout text-[9px] text-zinc-600">
-        {preview.keyframes.length} keyframes · {formatMillisecondsAsSeconds(preview.durationMs)}s ·{' '}
+        {preview.keyframes.length} keyframes · {formatMillisecondsAsSeconds(preview.durationMs)} ·{' '}
         {preview.iterationCount === 'infinite' ? 'infinite' : `${preview.iterationCount}×`} · {preview.direction}
       </p>
 

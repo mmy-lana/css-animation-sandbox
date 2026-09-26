@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
+  Box,
   Crosshair,
   Eye,
   Gauge,
+  Loader2,
   Move,
   PanelRight,
   SlidersHorizontal,
@@ -111,7 +113,122 @@ function describeStatus(
   return 'Autosave on';
 }
 
+/** Inert placeholder block; carries no state, so it is identical in every realm. */
+function SkeletonBar({ className }: { className?: string }) {
+  return <span aria-hidden="true" className={cn('block rounded bg-obsidian-800', className)} />;
+}
+
+/**
+ * The studio shell as it exists before the browser has a document to show.
+ *
+ * `useLocalStorageSync` adopts the persisted project in a mount effect, so
+ * everything derived from it — the project name, `canUndo`, the keyframe count,
+ * the save status — describes a *different* document on the client's first
+ * render than the one the server prerendered. On a returning visitor those
+ * differ for real, not theoretically: the server only ever sees
+ * `DEFAULT_PROJECT`, so a stored "Kinetic Headline" turns the Undo button from
+ * disabled to enabled between the two renders. React treats that as a
+ * hydration mismatch (#418/#423), throws the server markup away and re-renders
+ * the whole studio in place.
+ *
+ * This shell closes that window instead of papering over it. It is rendered by
+ * the server *and* by the client on the first paint, so the two trees are
+ * identical by construction; the persisted document is only allowed to reach the
+ * DOM after `isMounted` flips. The grid, the header and the scrub strip keep
+ * the real dimensions so the handoff moves nothing, and the live region
+ * announces the restore rather than leaving the page silent while it happens.
+ */
+function StudioShellSkeleton() {
+  return (
+    <main className="flex h-dvh w-full flex-col overflow-hidden bg-obsidian-950 text-zinc-200" aria-busy="true">
+      <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-obsidian-700/70 bg-obsidian-950/85 px-3 py-2 backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-studio-accent/15 text-studio-accent">
+            <Box width={15} height={15} aria-hidden="true" />
+          </span>
+          <div className="flex min-w-0 flex-col leading-tight">
+            <span className="truncate-tight text-xs font-semibold text-zinc-100">CSS Animation Sandbox</span>
+            <span className="readout truncate text-[9px] text-zinc-400">Restoring your studio</span>
+          </div>
+        </div>
+        <p role="status" aria-live="polite" className="ml-auto flex items-center gap-1.5 text-[9px] text-zinc-400">
+          <Loader2 width={12} height={12} aria-hidden="true" className="animate-[var(--animate-spin-slow)]" />
+          Loading your saved project…
+        </p>
+      </header>
+
+      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)_minmax(0,19rem)]">
+        <aside
+          className="hidden min-w-0 flex-col gap-3 overflow-hidden p-3 lg:flex lg:border-r lg:border-obsidian-700/60"
+          aria-hidden="true"
+        >
+          <div className="panel-surface flex flex-col gap-2.5 p-3">
+            <SkeletonBar className="h-2.5 w-24" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+          </div>
+          <div className="panel-surface flex flex-col gap-2.5 p-3">
+            <SkeletonBar className="h-2.5 w-20" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+          </div>
+        </aside>
+
+        <section className="hidden min-w-0 flex-col p-3 lg:flex" aria-hidden="true">
+          <div className="empty-grid flex flex-1 items-center justify-center rounded-lg border border-dashed border-obsidian-600">
+            <div className="flex flex-col items-center gap-3">
+              <SkeletonBar className="size-16 rounded-xl" />
+              <SkeletonBar className="h-2.5 w-40" />
+            </div>
+          </div>
+        </section>
+
+        <aside
+          className="hidden min-w-0 flex-col gap-3 overflow-hidden p-3 lg:flex lg:border-l lg:border-obsidian-700/60"
+          aria-hidden="true"
+        >
+          <div className="panel-surface flex flex-col gap-2.5 p-3">
+            <SkeletonBar className="h-2.5 w-28" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+          </div>
+          <div className="panel-surface flex flex-col gap-2.5 p-3">
+            <SkeletonBar className="h-2.5 w-20" />
+            <SkeletonBar className="h-7 w-full" />
+            <SkeletonBar className="h-7 w-full" />
+          </div>
+        </aside>
+      </div>
+
+      <div className="flex items-center gap-3 border-t border-obsidian-700/70 bg-obsidian-950/85 px-3 py-2" aria-hidden="true">
+        <SkeletonBar className="size-8 rounded-[10px]" />
+        <SkeletonBar className="h-8 w-8 rounded-md" />
+        <SkeletonBar className="h-8 w-8 rounded-md" />
+        <SkeletonBar className="h-1.5 flex-1 rounded-full" />
+        <SkeletonBar className="h-2.5 w-16" />
+      </div>
+    </main>
+  );
+}
+
 export default function SandboxPage() {
+  // --- Hydration gate ------------------------------------------------------
+  /**
+   * False during prerendering and on the browser's first paint, true from the
+   * first commit after mount. Storage and history are seeded from
+   * `DEFAULT_PROJECT` on both sides, but a returning visitor replaces them with
+   * the persisted document one effect later, so the studio is only allowed to
+   * render once the browser can no longer disagree with the server HTML.
+   */
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // --- Document, history and persistence ----------------------------------
   const storage = useLocalStorageSync({ initialProject: INITIAL_PROJECT, debounceMs: 400 });
   const history = useHistoryState<ProjectRecord>({ initialState: INITIAL_PROJECT, isEqual: projectsEqual });
@@ -180,7 +297,14 @@ export default function SandboxPage() {
   const [isPresetsOpen, setIsPresetsOpen] = useState(false);
   const [exportOptions, setExportOptions] = useState<ExportOptions>(DEFAULT_EXPORT_OPTIONS);
 
-  const timeline = useMemo(() => getActiveTimeline(project) ?? createTimeline(), [project]);
+  // The fallback carries a literal id on purpose. `createTimeline()` mints a
+  // random one, and this value is read during render, so a random id would
+  // describe a different timeline on the server than on the client for the very
+  // same document.
+  const timeline = useMemo(
+    () => getActiveTimeline(project) ?? createTimeline({ id: 'tl_empty', name: 'Untitled Timeline' }),
+    [project],
+  );
   const targetRef = useRef<HTMLDivElement>(null);
 
   // --- Playback -----------------------------------------------------------
@@ -427,6 +551,10 @@ export default function SandboxPage() {
   const activeBezier = activeKeyframe
     ? resolveTimingBezier(activeKeyframe.timingFunction, activeKeyframe.bezier)
     : null;
+
+  // Every hook above has already run; only the output is deferred, so the
+  // storage and history effects still hydrate the document behind the shell.
+  if (!isMounted) return <StudioShellSkeleton />;
 
   return (
     <main className="flex h-dvh w-full flex-col overflow-hidden bg-obsidian-950 text-zinc-200">
@@ -743,7 +871,7 @@ export default function SandboxPage() {
                           />
                           <span className="readout">{keyframe.offset}%</span>
                           <span className="truncate text-zinc-500">
-                            {formatMillisecondsAsSeconds((keyframe.offset / 100) * timeline.durationMs)}s ·{' '}
+                            {formatMillisecondsAsSeconds((keyframe.offset / 100) * timeline.durationMs)} ·{' '}
                             {TIMING_PRESET_LABELS[keyframe.timingFunction]}
                           </span>
                         </button>

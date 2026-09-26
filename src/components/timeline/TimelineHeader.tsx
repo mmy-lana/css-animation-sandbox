@@ -172,7 +172,7 @@ export function TimelineHeader({
       </div>
 
       <p className="readout text-[9px] text-zinc-400">
-        {formatMillisecondsAsSeconds(timeline.durationMs)}s active ·{' '}
+        {formatMillisecondsAsSeconds(timeline.durationMs)} active ·{' '}
         {timeline.iterationCount === 'infinite' ? 'infinite' : timeline.iterationCount} iteration
         {timeline.iterationCount === 1 || timeline.iterationCount === 'infinite' ? '' : 's'} ·{' '}
         {timeline.direction}

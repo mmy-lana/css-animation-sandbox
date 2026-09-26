@@ -131,9 +131,9 @@ export function ScrubBar({
         <div className="ml-auto flex items-baseline gap-2">
           <span className="readout text-zinc-100">{timecode}</span>
           <span className="readout text-zinc-400">
-            / {durationLabel}s
+            / {durationLabel}
             {delayMs > 0 ? (
-              <span className="ml-1.5 text-studio-violet-soft">+{formatMillisecondsAsSeconds(delayMs)}s delay</span>
+              <span className="ml-1.5 text-studio-violet-soft">+{formatMillisecondsAsSeconds(delayMs)} delay</span>
             ) : null}
           </span>
         </div>

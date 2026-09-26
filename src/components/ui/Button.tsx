@@ -82,7 +82,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       type={type}
-      disabled={isDisabled}
+      // Present or absent, never an explicit `false`. The attribute is part of
+      // the hydration contract: a server render that omitted it and a client
+      // render that wrote `disabled="false"` describe the same control, but
+      // React compares the serialized attribute, so the ternary keeps the
+      // enabled state byte-identical to what the server produced.
+      disabled={isDisabled ? true : undefined}
       aria-label={ariaLabel}
       aria-busy={loading || undefined}
       data-variant={variant}

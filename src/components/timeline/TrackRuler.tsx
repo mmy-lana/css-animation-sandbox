@@ -132,7 +132,7 @@ export function TrackRuler({
         aria-valuetext={
           presentational
             ? undefined
-            : `${Math.round(progressPercent)}% · ${formatMillisecondsAsSeconds((progressPercent / 100) * duration)}s`
+            : `${Math.round(progressPercent)}% · ${formatMillisecondsAsSeconds((progressPercent / 100) * duration)}`
         }
         aria-disabled={presentational ? undefined : disabled || undefined}
         onPointerDown={presentational ? undefined : handlePointerDown}
@@ -151,7 +151,7 @@ export function TrackRuler({
             aria-hidden="true"
             className="absolute inset-y-0 left-0 border-r border-dashed border-studio-violet-soft/50 bg-studio-violet/10"
             style={{ width: `${delayPercent}%` }}
-            title={`Delay ${formatMillisecondsAsSeconds(delayMs)}s`}
+            title={`Delay ${formatMillisecondsAsSeconds(delayMs)}`}
           />
         ) : null}
 
@@ -166,7 +166,7 @@ export function TrackRuler({
               >
                 {isMajor ? (
                   <span className="readout mb-0.5 -translate-x-1/2 text-[9px] leading-none text-zinc-400">
-                    {formatMillisecondsAsSeconds((percent / 100) * duration)}s
+                    {formatMillisecondsAsSeconds((percent / 100) * duration)}
                   </span>
                 ) : null}
                 <span

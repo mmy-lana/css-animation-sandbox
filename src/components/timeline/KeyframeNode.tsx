@@ -139,7 +139,7 @@ export function KeyframeNode({
       type="button"
       role="button"
       aria-pressed={isSelected}
-      aria-label={`Keyframe at ${keyframe.offset}% (${timeLabel}s)${pinned ? ', pinned endpoint' : ''}`}
+      aria-label={`Keyframe at ${keyframe.offset}% (${timeLabel})${pinned ? ', pinned endpoint' : ''}`}
       aria-valuetext={`${keyframe.offset}%`}
       disabled={disabled}
       data-keyframe-id={keyframe.id}
@@ -186,7 +186,7 @@ export function KeyframeNode({
         </span>
         {isSelected ? (
           <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 rounded bg-obsidian-950/90 px-1 text-[9px] text-studio-accent readout">
-            {keyframe.offset}% · {timeLabel}s
+            {keyframe.offset}% · {timeLabel}
           </span>
         ) : null}
       </span>
