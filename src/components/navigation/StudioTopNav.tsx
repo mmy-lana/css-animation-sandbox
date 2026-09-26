@@ -188,13 +188,31 @@ export function StudioTopNav({
           </Tooltip>
         </div>
 
-        <Button variant="secondary" size="sm" iconLeft={Sparkles} onClick={onOpenPresets} disabled={disabled}>
+        {/* The label span collapses to `display:none` below `sm`, which leaves
+            the button icon-only there, so the name has to come from the button
+            itself rather than from its contents. It is set to the *visible*
+            label on purpose: `aria-label` overrides descendant text, so naming
+            the button "Open presets" here would rename it at desktop widths
+            too, and the spoken name would stop matching the on-screen word. */}
+        <Button
+          variant="secondary"
+          size="sm"
+          iconLeft={Sparkles}
+          onClick={onOpenPresets}
+          disabled={disabled}
+          ariaLabel="Presets"
+        >
           <span className="hidden sm:inline">Presets</span>
-          <span className="sr-only sm:hidden">Open presets</span>
         </Button>
-        <Button variant="primary" size="sm" iconLeft={Download} onClick={onOpenExport} disabled={disabled}>
+        <Button
+          variant="primary"
+          size="sm"
+          iconLeft={Download}
+          onClick={onOpenExport}
+          disabled={disabled}
+          ariaLabel="Export"
+        >
           <span className="hidden sm:inline">Export</span>
-          <span className="sr-only sm:hidden">Open export</span>
         </Button>
       </div>
     </header>

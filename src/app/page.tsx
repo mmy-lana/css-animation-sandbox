@@ -646,7 +646,7 @@ export default function SandboxPage() {
           aria-label="Property inspector"
         >
           <div className="flex items-center gap-2">
-            <h2 className="text-[10px] tracking-widest text-zinc-500 uppercase">Inspector</h2>
+            <h2 className="text-[10px] tracking-widest text-zinc-400 uppercase">Inspector</h2>
             {activeKeyframe ? (
               <span className="readout ml-auto rounded bg-obsidian-800 px-1.5 py-0.5 text-[9px] text-zinc-400">
                 {activeKeyframe.offset}%
@@ -682,7 +682,7 @@ export default function SandboxPage() {
               <PropertySection
                 title="Transform"
                 icon={Move}
-                badge={<span className="readout text-[9px] text-zinc-600">3D</span>}
+                badge={<span className="readout text-[9px] text-zinc-400">3D</span>}
               >
                 <TransformControls
                   value={activeKeyframe.properties.transform}
@@ -708,7 +708,7 @@ export default function SandboxPage() {
             <div className="empty-grid flex flex-col items-center gap-2 rounded-lg border border-dashed border-obsidian-600 p-6 text-center">
               <AlertTriangle width={18} height={18} aria-hidden="true" className="text-studio-warning" />
               <p className="text-[11px] text-zinc-400">This timeline has no keyframes yet.</p>
-              <p className="text-[10px] text-zinc-600">Add one at the playhead to start editing properties.</p>
+              <p className="text-[10px] text-zinc-400">Add one at the playhead to start editing properties.</p>
             </div>
           )}
 
@@ -744,7 +744,7 @@ export default function SandboxPage() {
               spellCheck={false}
               placeholder="<svg viewBox='0 0 24 24'>…</svg>"
               aria-label="Custom SVG markup"
-              className="w-full resize-y rounded-md border border-obsidian-700 bg-obsidian-900 p-2 font-mono text-[10px] text-zinc-200 outline-none placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-studio-accent"
+              className="w-full resize-y rounded-md border border-obsidian-700 bg-obsidian-900 p-2 font-mono text-[10px] text-zinc-200 outline-none placeholder:text-zinc-400 focus-visible:ring-1 focus-visible:ring-studio-accent"
             />
           </PropertySection>
         </aside>
@@ -784,7 +784,7 @@ export default function SandboxPage() {
             </div>
           )}
 
-          <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-600">
+          <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-zinc-400">
             <kbd className="readout rounded border border-obsidian-700 px-1">←</kbd>
             <kbd className="readout rounded border border-obsidian-700 px-1">→</kbd>
             nudge the playhead · <kbd className="readout rounded border border-obsidian-700 px-1">⌘Z</kbd> undo ·
@@ -810,7 +810,7 @@ export default function SandboxPage() {
           />
 
           <div className="panel-surface flex flex-col gap-2 p-3">
-            <h3 className="text-[10px] tracking-widest text-zinc-500 uppercase">Playback</h3>
+            <h3 className="text-[10px] tracking-widest text-zinc-400 uppercase">Playback</h3>
             <div className="grid grid-cols-2 gap-2">
               <Select
                 value={gizmoMode}
@@ -848,11 +848,11 @@ export default function SandboxPage() {
 
           <div className="panel-surface flex flex-col gap-2 p-3">
             <div className="flex items-center gap-2">
-              <h3 className="text-[10px] tracking-widest text-zinc-500 uppercase">Keyframes</h3>
-              <span className="readout ml-auto text-[9px] text-zinc-600">{timeline.keyframes.length} total</span>
+              <h3 className="text-[10px] tracking-widest text-zinc-400 uppercase">Keyframes</h3>
+              <span className="readout ml-auto text-[9px] text-zinc-400">{timeline.keyframes.length} total</span>
             </div>
             {timeline.keyframes.length === 0 ? (
-              <p className="text-[10px] text-zinc-500">No keyframes in this timeline.</p>
+              <p className="text-[10px] text-zinc-400">No keyframes in this timeline.</p>
             ) : (
               <ul className="flex max-h-56 flex-col gap-1 overflow-y-auto pr-1">
                 {timeline.keyframes.map((keyframe) => {
@@ -878,7 +878,7 @@ export default function SandboxPage() {
                             className={cn('size-1.5 rotate-45', isActive ? 'bg-studio-accent' : 'bg-zinc-600')}
                           />
                           <span className="readout">{keyframe.offset}%</span>
-                          <span className="truncate text-zinc-500">
+                          <span className="truncate text-zinc-400">
                             {formatMillisecondsAsSeconds((keyframe.offset / 100) * timeline.durationMs)} ·{' '}
                             {TIMING_PRESET_LABELS[keyframe.timingFunction]}
                           </span>
@@ -888,7 +888,7 @@ export default function SandboxPage() {
                           onClick={() => deleteKeyframe(keyframe.id)}
                           disabled={timeline.keyframes.length <= 1}
                           aria-label={`Delete keyframe at ${keyframe.offset}%`}
-                          className="rounded p-1 text-zinc-600 hover:text-studio-danger focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent disabled:pointer-events-none disabled:opacity-30"
+                          className="rounded p-1 text-zinc-400 hover:text-studio-danger focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent disabled:pointer-events-none disabled:opacity-30"
                         >
                           <X width={12} height={12} aria-hidden="true" />
                         </button>
@@ -902,7 +902,7 @@ export default function SandboxPage() {
 
           {project.timelines.length > 1 ? (
             <div className="panel-surface flex flex-col gap-2 p-3">
-              <h3 className="text-[10px] tracking-widest text-zinc-500 uppercase">Timelines</h3>
+              <h3 className="text-[10px] tracking-widest text-zinc-400 uppercase">Timelines</h3>
               <ul className="flex flex-col gap-1">
                 {project.timelines.map((entry) => (
                   <li key={entry.id} className="flex items-center gap-1">
@@ -923,7 +923,7 @@ export default function SandboxPage() {
                       type="button"
                       onClick={() => dispatch((current) => removeTimeline(current, entry.id), true)}
                       aria-label={`Remove timeline ${entry.name}`}
-                      className="rounded p-1 text-zinc-600 hover:text-studio-danger focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent"
+                      className="rounded p-1 text-zinc-400 hover:text-studio-danger focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent"
                     >
                       <X width={12} height={12} aria-hidden="true" />
                     </button>

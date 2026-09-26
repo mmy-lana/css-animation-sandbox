@@ -175,7 +175,7 @@ export function BezierCurveEditor({ bezier, onChange, disabled = false, animateP
             onClick={() => commit({ ...DEFAULT_CUBIC_BEZIER })}
             aria-label="Reset curve to ease-in-out"
             title="Reset to ease-in-out"
-            className="grid h-6 w-6 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+            className="grid h-6 w-6 place-items-center rounded-md text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
           >
             <RotateCcw width={12} height={12} aria-hidden="true" />
           </button>
@@ -352,7 +352,7 @@ export function BezierCurveEditor({ bezier, onChange, disabled = false, animateP
                 'disabled:pointer-events-none',
                 active
                   ? 'border-studio-accent/60 bg-studio-accent/15 text-studio-accent'
-                  : 'border-obsidian-700 text-zinc-500 hover:border-obsidian-600 hover:text-zinc-300',
+                  : 'border-obsidian-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-100',
               )}
             >
               {preset}

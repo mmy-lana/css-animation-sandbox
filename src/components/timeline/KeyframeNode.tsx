@@ -175,7 +175,7 @@ export function KeyframeNode({
               ? 'scale-110 text-studio-accent drop-shadow-[0_0_8px_rgba(0,245,212,0.6)]'
               : isActive
                 ? 'text-studio-violet-soft'
-                : 'text-zinc-500 hover:text-zinc-200',
+                : 'text-zinc-400 hover:text-zinc-100',
           )}
         >
           {pinned ? (

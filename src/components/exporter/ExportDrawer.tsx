@@ -111,7 +111,7 @@ export function ExportDrawer({
       className={className}
       footer={
         <>
-          <span className="mr-auto readout text-[9px] text-zinc-600">
+          <span className="mr-auto readout text-[9px] text-zinc-400">
             {isExportable ? 'Generated from the current keyframes' : 'Export blocked by timeline state'}
           </span>
           <Button variant="secondary" size="sm" iconLeft={X} onClick={onClose}>

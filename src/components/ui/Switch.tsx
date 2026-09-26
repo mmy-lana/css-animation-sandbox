@@ -48,7 +48,7 @@ export function Switch({ checked, onCheckedChange, label, description, disabled 
         >
           <span className="block text-[11px] font-medium tracking-wide text-zinc-300 uppercase">{label}</span>
           {description ? (
-            <span id={descriptionId} className="mt-0.5 block text-[10px] leading-snug text-zinc-500">
+            <span id={descriptionId} className="mt-0.5 block text-[10px] leading-snug text-zinc-400">
               {description}
             </span>
           ) : null}

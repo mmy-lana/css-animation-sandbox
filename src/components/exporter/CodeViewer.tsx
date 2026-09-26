@@ -159,7 +159,7 @@ export function CodeViewer({
                 'outline-none focus-visible:ring-1 focus-visible:ring-studio-accent disabled:pointer-events-none disabled:opacity-50',
                 isSelected
                   ? 'border-studio-accent text-studio-accent'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-300',
+                  : 'border-transparent text-zinc-400 hover:text-zinc-200',
               )}
             >
               {EXPORT_TARGET_LABELS[candidate]}
@@ -168,7 +168,7 @@ export function CodeViewer({
         })}
 
         <div className="ml-auto flex items-center gap-1">
-          <span className="readout text-[9px] text-zinc-600">{lines.length} lines</span>
+          <span className="readout text-[9px] text-zinc-400">{lines.length} lines</span>
           <Tooltip content="Copy to clipboard">
             <Button
               variant="ghost"
@@ -226,7 +226,7 @@ export function CodeViewer({
           <code>
             {lines.map((line, index) => (
               <span key={index} className="flex">
-                <span aria-hidden="true" className="readout w-9 shrink-0 pr-3 text-right text-zinc-700 select-none">
+                <span aria-hidden="true" className="readout w-9 shrink-0 pr-3 text-right text-zinc-400 select-none">
                   {index + 1}
                 </span>
                 <span className="whitespace-pre">{line === '' ? ' ' : line}</span>

@@ -179,7 +179,7 @@ export function ColorInput({
 
         {showAlpha ? (
           <div className="flex shrink-0 items-center gap-1.5">
-            <label htmlFor={`${fieldId}-alpha`} className="text-[10px] text-zinc-500">
+            <label htmlFor={`${fieldId}-alpha`} className="text-[10px] text-zinc-400">
               A
             </label>
             <input
@@ -195,7 +195,7 @@ export function ColorInput({
               onChange={(event) => emit({ ...color, a: clampAlpha(Number(event.target.value)) })}
               className="h-1 w-14 cursor-pointer appearance-none rounded-full border border-obsidian-700 bg-obsidian-800 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-studio-accent [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-studio-accent"
             />
-            <span className="readout w-8 text-right text-[10px] text-zinc-500">
+            <span className="readout w-8 text-right text-[10px] text-zinc-400">
               {Math.round(color.a * 100)}%
             </span>
           </div>
@@ -208,7 +208,7 @@ export function ColorInput({
           aria-expanded={showChannels}
           aria-label="Toggle RGB channels"
           title="Toggle RGB channels"
-          className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+          className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
         >
           <Pipette width={13} height={13} aria-hidden="true" />
         </button>
@@ -221,7 +221,7 @@ export function ColorInput({
             const current = isAlpha ? color.a : color[channel];
             return (
               <label key={channel} className="flex items-center gap-1 rounded-md border border-obsidian-700/70 bg-obsidian-850 px-1.5 py-1">
-                <span className="text-[9px] text-zinc-500 uppercase">{channel}</span>
+                <span className="text-[9px] text-zinc-400 uppercase">{channel}</span>
                 <input
                   type="number"
                   min={0}
@@ -294,7 +294,7 @@ export function ColorInput({
         type="button"
         disabled={disabled || color.a >= 1}
         onClick={() => emit({ ...color, a: 1 }, true)}
-        className="mt-1 inline-flex items-center gap-1 text-[10px] text-zinc-500 transition-colors hover:text-studio-accent disabled:pointer-events-none disabled:opacity-40"
+        className="mt-1 inline-flex items-center gap-1 text-[10px] text-zinc-400 transition-colors hover:text-studio-accent disabled:pointer-events-none disabled:opacity-40"
       >
         <RotateCcw width={10} height={10} aria-hidden="true" />
         Reset alpha

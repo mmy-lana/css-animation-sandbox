@@ -37,7 +37,7 @@ export function OutputConfigBar({ options, onChange, disabled = false, className
       aria-label="Export options"
     >
       <div className="grid gap-2 sm:grid-cols-2">
-        <label className="flex flex-col gap-1 text-[10px] tracking-wide text-zinc-500 uppercase">
+        <label className="flex flex-col gap-1 text-[10px] tracking-wide text-zinc-400 uppercase">
           Class name
           <input
             type="text"
@@ -51,12 +51,12 @@ export function OutputConfigBar({ options, onChange, disabled = false, className
             aria-label="Animation class name"
             className={cn(
               'h-8 rounded-md border border-obsidian-700 bg-obsidian-900 px-2 font-mono text-xs text-zinc-100 outline-none',
-              'placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-studio-accent',
+              'placeholder:text-zinc-400 focus-visible:ring-1 focus-visible:ring-studio-accent',
               errorFor.has('animationClassName') && 'border-studio-danger',
             )}
           />
         </label>
-        <label className="flex flex-col gap-1 text-[10px] tracking-wide text-zinc-500 uppercase">
+        <label className="flex flex-col gap-1 text-[10px] tracking-wide text-zinc-400 uppercase">
           Keyframes rule
           <input
             type="text"
@@ -70,7 +70,7 @@ export function OutputConfigBar({ options, onChange, disabled = false, className
             aria-label="Keyframes rule name"
             className={cn(
               'h-8 rounded-md border border-obsidian-700 bg-obsidian-900 px-2 font-mono text-xs text-zinc-100 outline-none',
-              'placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-studio-accent',
+              'placeholder:text-zinc-400 focus-visible:ring-1 focus-visible:ring-studio-accent',
               errorFor.has('keyframeRuleName') && 'border-studio-danger',
             )}
           />

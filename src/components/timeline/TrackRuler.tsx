@@ -170,7 +170,7 @@ export function TrackRuler({
                   </span>
                 ) : null}
                 <span
-                  className={cn('w-px', isMajor ? 'bg-zinc-600' : 'bg-obsidian-600')}
+                  className={cn('w-px', isMajor ? 'bg-zinc-400' : 'bg-obsidian-600')}
                   style={{ height: isMajor ? MAJOR_TICK_HEIGHT : MINOR_TICK_HEIGHT }}
                 />
               </div>

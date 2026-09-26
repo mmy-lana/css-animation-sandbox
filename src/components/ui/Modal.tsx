@@ -138,7 +138,7 @@ export function Modal({
               {title}
             </h2>
             {description ? (
-              <p id={descriptionId} className="mt-1 text-xs leading-relaxed text-zinc-500">
+              <p id={descriptionId} className="mt-1 text-xs leading-relaxed text-zinc-400">
                 {description}
               </p>
             ) : null}
@@ -148,7 +148,7 @@ export function Modal({
               type="button"
               onClick={onClose}
               aria-label="Close dialog"
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-obsidian-800 hover:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent"
             >
               <X width={15} height={15} aria-hidden="true" />
             </button>
