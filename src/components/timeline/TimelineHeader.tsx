@@ -111,7 +111,11 @@ export function TimelineHeader({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5">
+      {/* Container-scoped on purpose: this panel lives in a fixed 19rem sidebar,
+          so viewport breakpoints squeeze five fields into ~55px each and the
+          labels collide with the steppers. Two columns keeps every control wide
+          enough to show its label, value and unit. */}
+      <div className="grid grid-cols-2 gap-2">
         <NumberInput
           label="Duration"
           value={durationSeconds}

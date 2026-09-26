@@ -136,6 +136,13 @@ export default function SandboxPage() {
   // whichever side moved last wins, so neither can clobber the other silently.
   const lastHistoryRef = useRef<ProjectRecord | null>(null);
   const lastStorageRef = useRef<ProjectRecord | null>(null);
+  /**
+   * The value this tab last handed to `storage.setProject`. The sync effect sees
+   * that same object come back on the next pass, and mistaking our own write for
+   * a foreign one would roll the document back onto it and discard the edit that
+   * produced it.
+   */
+  const localWriteRef = useRef<ProjectRecord | null>(null);
   useEffect(() => {
     if (!storage.isHydrated) return;
     const isFirstCommit = lastHistoryRef.current === null;
@@ -144,15 +151,23 @@ export default function SandboxPage() {
     lastHistoryRef.current = project;
     lastStorageRef.current = storage.project;
 
+    // An echo only matches by reference; a genuine cross-tab write carrying the
+    // same content must still win, so the guard is cleared as it is consumed.
+    const isLocalEcho = localWriteRef.current !== null && localWriteRef.current === storage.project;
+    if (isLocalEcho) localWriteRef.current = null;
+
     if (isFirstCommit) {
       if (!projectsEqual(project, storage.project)) replaceState(storage.project);
       return;
     }
     if (historyChanged) {
+      localWriteRef.current = project;
       storage.setProject(project);
       return;
     }
-    if (storageChanged && !projectsEqual(project, storage.project)) replaceState(storage.project);
+    if (storageChanged && !isLocalEcho && !projectsEqual(project, storage.project)) {
+      replaceState(storage.project);
+    }
   }, [project, replaceState, storage.isHydrated, storage.project, storage.setProject]);
 
   const [mutationErrors, setMutationErrors] = useState<ValidationError[]>([]);
@@ -431,7 +446,6 @@ export default function SandboxPage() {
         onOpenPresets={() => setIsPresetsOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
         onRenameProject={(name) => dispatch((current) => mutationSuccess({ ...current, name }), true)}
-        disabled={!storage.isHydrated}
       />
 
       {mutationErrors.length > 0 ? (
