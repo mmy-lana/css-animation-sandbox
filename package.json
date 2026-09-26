@@ -8,9 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "smoke": "pnpm run smoke:core && pnpm run smoke:design",
+    "smoke": "pnpm run smoke:core && pnpm run smoke:design && pnpm run smoke:components",
     "smoke:core": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./tools/register-loader.mjs tools/smoke-phase1.mts",
-    "smoke:design": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./tools/register-loader.mjs tools/smoke-phase2.mts"
+    "smoke:design": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./tools/register-loader.mjs tools/smoke-phase2.mts",
+    "smoke:components": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./tools/register-loader.mjs tools/smoke-phase3.mts"
   },
   "dependencies": {
     "dompurify": "latest",

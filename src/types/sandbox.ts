@@ -166,6 +166,12 @@ export const CSS_PROPERTY_UNITS: readonly CSSPropertyUnit[] = [
 
 export const TRANSLATE_UNITS: readonly TransformProperties['translateUnit'][] = ['px', '%', 'rem'] as const;
 
+export const TRANSLATE_UNIT_LABELS: Readonly<Record<TransformProperties['translateUnit'], string>> = {
+  px: 'Pixels',
+  '%': 'Percent',
+  rem: 'Rem',
+};
+
 export const TIMING_PRESETS: readonly TimingPreset[] = [
   'linear',
   'ease',
@@ -353,6 +359,15 @@ export const DEFAULT_CUBIC_BEZIER: Readonly<CubicBezierPoints> = Object.freeze({
   x2: 0.58,
   y2: 1,
 });
+
+/**
+ * True when every field of `value` matches `defaults`. Used to disable the
+ * "reset" affordances in the inspector without duplicating equality logic.
+ */
+export function matchesDefaults<T extends object>(defaults: Readonly<T>, value: T): boolean {
+  const keys = Object.keys(defaults) as Array<keyof T>;
+  return keys.every((key) => value[key] === defaults[key]);
+}
 
 export const DEFAULT_TRANSFORM_PROPERTIES: Readonly<TransformProperties> = Object.freeze({
   translateX: 0,
