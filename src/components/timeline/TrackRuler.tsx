@@ -13,6 +13,11 @@ export interface TrackRulerProps {
   /** Renders the delay window as a hatched region. */
   delayMs?: number;
   disabled?: boolean;
+  /**
+   * Drops the slider role, tab stop and pointer handling so a larger surface
+   * (the timeline track) can own seeking without duplicating the a11y tree.
+   */
+  presentational?: boolean;
   className?: string;
 }
 
@@ -27,7 +32,15 @@ const MAJOR_TICK_HEIGHT = 9;
  * a client X back into 0…100% and commits on release, while arrow keys nudge by
  * one step for keyboard-only seeking.
  */
-export function TrackRuler({ durationMs, offsetPercent, onSeek, delayMs = 0, disabled = false, className }: TrackRulerProps) {
+export function TrackRuler({
+  durationMs,
+  offsetPercent,
+  onSeek,
+  delayMs = 0,
+  disabled = false,
+  presentational = false,
+  className,
+}: TrackRulerProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
 
@@ -110,21 +123,26 @@ export function TrackRuler({ durationMs, offsetPercent, onSeek, delayMs = 0, dis
     <div className={cn('select-none', disabled && 'pointer-events-none opacity-50', className)}>
       <div
         ref={trackRef}
-        role="slider"
-        tabIndex={disabled ? -1 : 0}
-        aria-label="Timeline position"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(progressPercent * 10) / 10}
-        aria-valuetext={`${Math.round(progressPercent)}% · ${formatMillisecondsAsSeconds((progressPercent / 100) * duration)}s`}
-        aria-disabled={disabled || undefined}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onKeyDown={handleKeyDown}
+        role={presentational ? undefined : 'slider'}
+        tabIndex={presentational || disabled ? -1 : 0}
+        aria-label={presentational ? undefined : 'Timeline position'}
+        aria-valuemin={presentational ? undefined : 0}
+        aria-valuemax={presentational ? undefined : 100}
+        aria-valuenow={presentational ? undefined : Math.round(progressPercent * 10) / 10}
+        aria-valuetext={
+          presentational
+            ? undefined
+            : `${Math.round(progressPercent)}% · ${formatMillisecondsAsSeconds((progressPercent / 100) * duration)}s`
+        }
+        aria-disabled={presentational ? undefined : disabled || undefined}
+        onPointerDown={presentational ? undefined : handlePointerDown}
+        onPointerMove={presentational ? undefined : handlePointerMove}
+        onPointerUp={presentational ? undefined : endDrag}
+        onPointerCancel={presentational ? undefined : endDrag}
+        onKeyDown={presentational ? undefined : handleKeyDown}
         className={cn(
-          'relative h-7 cursor-ew-resize touch-none rounded-md border border-obsidian-700/70 bg-obsidian-850/80',
+          'relative h-7 rounded-md border border-obsidian-700/70 bg-obsidian-850/80',
+          presentational ? 'pointer-events-none' : 'cursor-ew-resize touch-none',
           'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent',
         )}
       >

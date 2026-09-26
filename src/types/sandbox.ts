@@ -1003,6 +1003,13 @@ export function updateTimeline(
     return mutationFailure([{ field: `timeline.${timelineId}`, message: 'Timeline does not exist.' }]);
   }
   const next = updater(current);
+  if (next.id !== timelineId) {
+    // Swapping the id would leave `activeTimelineId` dangling, so replacing a
+    // timeline's contents is only legal while keeping its identity.
+    return mutationFailure([
+      { field: `timeline.${timelineId}`, message: 'Timeline id is immutable; keep the id when replacing a timeline.' },
+    ]);
+  }
   const errors = validateTimelineTiming(next).map((error) => ({ ...error, field: error.field.replace(`timeline.${next.id}`, `timeline.${timelineId}`) }));
   if (errors.length > 0) return mutationFailure(errors);
 

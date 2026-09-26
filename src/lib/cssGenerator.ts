@@ -16,6 +16,7 @@ import {
   type ExportOptions,
   type FilterProperties,
   type KeyframePoint,
+  type KeyframeProperties,
   type StyleProperties,
   type TimingPreset,
   type TransformProperties,
@@ -400,6 +401,72 @@ ${options.prettify ? optionsEntries.map((entry) => `    ${entry},`).join('\n') :
   animation.play();
 }
 `;
+}
+
+// ---------------------------------------------------------------------------
+// Keyframe interpolation (pure preview math, no DOM access)
+// ---------------------------------------------------------------------------
+
+const lerp = (from: number, to: number, progress: number): number => from + (to - from) * progress;
+
+/**
+ * Interpolates every numeric property between two keyframes.
+ *
+ * Numbers — translations, rotations, scales, filter channels, opacity and the
+ * box-shadow offsets — interpolate linearly. Colours and the `box-shadow-inset`
+ * flag are *discrete*: they switch at the midpoint. That is a deliberate
+ * preview-only simplification, documented because the browser's own colour
+ * interpolation is a detail this studio does not reproduce; the exported CSS
+ * is unaffected because it never passes through this function.
+ */
+export function interpolateKeyframeProperties(
+  from: KeyframePoint,
+  to: KeyframePoint,
+  progress: number,
+): KeyframeProperties {
+  const t = Math.min(Math.max(Number.isFinite(progress) ? progress : 0, 0), 1);
+  const midpoint = t < 0.5 ? from : to;
+  const source = midpoint.properties;
+
+  return {
+    transform: {
+      ...source.transform,
+      translateX: lerp(from.properties.transform.translateX, to.properties.transform.translateX, t),
+      translateY: lerp(from.properties.transform.translateY, to.properties.transform.translateY, t),
+      translateZ: lerp(from.properties.transform.translateZ, to.properties.transform.translateZ, t),
+      rotateX: lerp(from.properties.transform.rotateX, to.properties.transform.rotateX, t),
+      rotateY: lerp(from.properties.transform.rotateY, to.properties.transform.rotateY, t),
+      rotateZ: lerp(from.properties.transform.rotateZ, to.properties.transform.rotateZ, t),
+      scaleX: lerp(from.properties.transform.scaleX, to.properties.transform.scaleX, t),
+      scaleY: lerp(from.properties.transform.scaleY, to.properties.transform.scaleY, t),
+      scaleZ: lerp(from.properties.transform.scaleZ, to.properties.transform.scaleZ, t),
+      skewX: lerp(from.properties.transform.skewX, to.properties.transform.skewX, t),
+      skewY: lerp(from.properties.transform.skewY, to.properties.transform.skewY, t),
+    },
+    filter: {
+      ...source.filter,
+      blur: lerp(from.properties.filter.blur, to.properties.filter.blur, t),
+      brightness: lerp(from.properties.filter.brightness, to.properties.filter.brightness, t),
+      contrast: lerp(from.properties.filter.contrast, to.properties.filter.contrast, t),
+      grayscale: lerp(from.properties.filter.grayscale, to.properties.filter.grayscale, t),
+      hueRotate: lerp(from.properties.filter.hueRotate, to.properties.filter.hueRotate, t),
+      invert: lerp(from.properties.filter.invert, to.properties.filter.invert, t),
+      opacity: lerp(from.properties.filter.opacity, to.properties.filter.opacity, t),
+      saturate: lerp(from.properties.filter.saturate, to.properties.filter.saturate, t),
+    },
+    styles: {
+      ...source.styles,
+      opacity: lerp(from.properties.styles.opacity, to.properties.styles.opacity, t),
+      borderWidth: lerp(from.properties.styles.borderWidth, to.properties.styles.borderWidth, t),
+      borderRadius: lerp(from.properties.styles.borderRadius, to.properties.styles.borderRadius, t),
+      boxShadowX: lerp(from.properties.styles.boxShadowX, to.properties.styles.boxShadowX, t),
+      boxShadowY: lerp(from.properties.styles.boxShadowY, to.properties.styles.boxShadowY, t),
+      boxShadowBlur: lerp(from.properties.styles.boxShadowBlur, to.properties.styles.boxShadowBlur, t),
+      boxShadowSpread: lerp(from.properties.styles.boxShadowSpread, to.properties.styles.boxShadowSpread, t),
+      transformOriginX: lerp(from.properties.styles.transformOriginX, to.properties.styles.transformOriginX, t),
+      transformOriginY: lerp(from.properties.styles.transformOriginY, to.properties.styles.transformOriginY, t),
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
