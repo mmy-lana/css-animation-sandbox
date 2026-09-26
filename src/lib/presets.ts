@@ -661,6 +661,289 @@ export const ANIMATION_PRESETS: readonly AnimationPreset[] = [
         ],
       }),
   },
+  {
+    id: 'aurora-wave',
+    name: 'Aurora Wave',
+    category: 'material',
+    description: 'A border glow that drifts through three hues while the panel softly pulses.',
+    preview: { shape: 'card', viewportBackground: 'solid-obsidian', stageLightingIntensity: 0.5 },
+    build: () =>
+      createTimeline({
+        name: 'Aurora Wave',
+        durationMs: 4200,
+        iterationCount: 'infinite',
+        direction: 'normal',
+        fillMode: 'both',
+        keyframes: [
+          // 0% and 100% are the same state and the hue sweep ends on a full
+          // 360deg turn, so the restart is a continuation rather than a cut.
+          timed('ease-in-out', 0, {
+            transform: { scaleX: 1, scaleY: 1 },
+            filter: { hueRotate: 0, blur: 0, saturate: 120 },
+            styles: {
+              borderColor: '#22d3ee',
+              borderWidth: 2,
+              boxShadowBlur: 42,
+              boxShadowSpread: -6,
+              boxShadowColor: 'rgba(34, 211, 238, 0.55)',
+            },
+          }),
+          timed('ease-in-out', 25, {
+            transform: { scaleX: 1.01, scaleY: 1.01 },
+            filter: { hueRotate: 90, blur: 1.5, saturate: 135 },
+            styles: {
+              borderColor: '#a855f7',
+              borderWidth: 2,
+              boxShadowBlur: 66,
+              boxShadowSpread: -10,
+              boxShadowColor: 'rgba(168, 85, 247, 0.6)',
+            },
+          }),
+          timed('ease-in-out', 50, {
+            transform: { scaleX: 1, scaleY: 1 },
+            filter: { hueRotate: 180, blur: 0, saturate: 150 },
+            styles: {
+              borderColor: '#f472b6',
+              borderWidth: 3,
+              boxShadowBlur: 88,
+              boxShadowSpread: -14,
+              boxShadowColor: 'rgba(244, 114, 182, 0.62)',
+            },
+          }),
+          timed('ease-in-out', 75, {
+            transform: { scaleX: 0.99, scaleY: 0.99 },
+            filter: { hueRotate: 270, blur: 1.5, saturate: 135 },
+            styles: {
+              borderColor: '#5eead4',
+              borderWidth: 2,
+              boxShadowBlur: 66,
+              boxShadowSpread: -10,
+              boxShadowColor: 'rgba(94, 234, 212, 0.6)',
+            },
+          }),
+          timed('ease-in-out', 100, {
+            transform: { scaleX: 1, scaleY: 1 },
+            filter: { hueRotate: 360, blur: 0, saturate: 120 },
+            styles: {
+              borderColor: '#22d3ee',
+              borderWidth: 2,
+              boxShadowBlur: 42,
+              boxShadowSpread: -6,
+              boxShadowColor: 'rgba(34, 211, 238, 0.55)',
+            },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'cyber-flicker',
+    name: 'Cyber Flicker',
+    category: 'attention',
+    description: 'A high-voltage badge that snaps between brightness plateaus and jolts sideways.',
+    preview: {
+      shape: 'badge',
+      viewportBackground: 'solid-obsidian',
+      stageLightingIntensity: 0.2,
+      enableMotionTrails: false,
+    },
+    build: () =>
+      createTimeline({
+        name: 'Cyber Flicker',
+        durationMs: 1400,
+        iterationCount: 'infinite',
+        direction: 'normal',
+        fillMode: 'both',
+        keyframes: [
+          // `step-start` holds each plateau for the whole segment and cuts
+          // instantly at its boundary, which is what makes this read as a
+          // failing tube rather than a pulsing one. The two eased frames are the
+          // only places the motion is allowed to be smooth.
+          timed('ease-out', 0, {
+            transform: { translateX: 0, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 100, contrast: 100 },
+            styles: { borderColor: '#00f5d4', borderWidth: 2, boxShadowBlur: 24, boxShadowColor: 'rgba(0, 245, 212, 0.35)' },
+          }),
+          timed('step-start', 5, {
+            transform: { translateX: 3, scaleX: 1.02, scaleY: 0.98 },
+            filter: { brightness: 196, contrast: 148 },
+            styles: { borderColor: '#ecfeff', borderWidth: 3, boxShadowBlur: 54, boxShadowColor: 'rgba(236, 254, 255, 0.7)' },
+          }),
+          timed('step-start', 9, {
+            transform: { translateX: -2, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 72, contrast: 86 },
+            styles: { borderColor: '#164e63', borderWidth: 2, boxShadowBlur: 8, boxShadowColor: 'rgba(0, 245, 212, 0.12)' },
+          }),
+          timed('step-start', 13, {
+            transform: { translateX: 2, scaleX: 1.03, scaleY: 0.97 },
+            filter: { brightness: 232, contrast: 170 },
+            styles: { borderColor: '#00f5d4', borderWidth: 4, boxShadowBlur: 72, boxShadowColor: 'rgba(0, 245, 212, 0.8)' },
+          }),
+          timed('step-start', 18, {
+            transform: { translateX: -3, scaleX: 0.99, scaleY: 1.01 },
+            filter: { brightness: 88, contrast: 104 },
+            styles: { borderColor: '#0f766e', borderWidth: 2, boxShadowBlur: 14, boxShadowColor: 'rgba(0, 245, 212, 0.2)' },
+          }),
+          timed('step-start', 24, {
+            transform: { translateX: 1, scaleX: 1.01, scaleY: 1.01 },
+            filter: { brightness: 168, contrast: 132 },
+            styles: { borderColor: '#5eead4', borderWidth: 3, boxShadowBlur: 58, boxShadowColor: 'rgba(94, 234, 212, 0.62)' },
+          }),
+          timed('step-start', 31, {
+            transform: { translateX: -1, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 64, contrast: 78 },
+            styles: { borderColor: '#083344', borderWidth: 2, boxShadowBlur: 6, boxShadowColor: 'rgba(0, 245, 212, 0.1)' },
+          }),
+          // A short recovery ramp: the badge climbs back to its idle level and
+          // holds there for the tail of the cycle.
+          timed('ease-in-out', 42, {
+            transform: { translateX: 0, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 108, contrast: 106 },
+            styles: { borderColor: '#00f5d4', borderWidth: 2, boxShadowBlur: 30, boxShadowColor: 'rgba(0, 245, 212, 0.4)' },
+          }),
+          timed('ease-in-out', 68, {
+            transform: { translateX: 0, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 124, contrast: 112 },
+            styles: { borderColor: '#5eead4', borderWidth: 2, boxShadowBlur: 38, boxShadowColor: 'rgba(94, 234, 212, 0.46)' },
+          }),
+          timed('ease-out', 100, {
+            transform: { translateX: 0, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 100, contrast: 100 },
+            styles: { borderColor: '#00f5d4', borderWidth: 2, boxShadowBlur: 24, boxShadowColor: 'rgba(0, 245, 212, 0.35)' },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'card-hover-3d',
+    name: 'Card Hover 3D',
+    category: 'motion',
+    description: 'A card pitches back in isometric perspective and casts a deep, widening shadow.',
+    preview: {
+      shape: 'card',
+      viewportBackground: 'grid-dark',
+      showPerspectiveGuide: true,
+      stageLightingIntensity: 0.65,
+    },
+    build: () =>
+      createTimeline({
+        name: 'Card Hover 3D',
+        durationMs: 1100,
+        fillMode: 'both',
+        keyframes: [
+          // The lift lands at 55% rather than 100% so the peak pose is held for
+          // a beat: an instantaneous return reads as a bounce, not a hover.
+          timed('ease-out', 0, {
+            transform: { rotateX: 0, rotateY: 0, translateY: 0, scaleX: 1, scaleY: 1 },
+            styles: { boxShadowX: 0, boxShadowY: 6, boxShadowBlur: 18, boxShadowSpread: 0, boxShadowColor: 'rgba(0, 0, 0, 0.55)' },
+          }),
+          timed('ease-out', 55, {
+            transform: { rotateX: -18, rotateY: 24, translateY: -28, scaleX: 1.04, scaleY: 1.04 },
+            styles: { boxShadowX: 14, boxShadowY: 48, boxShadowBlur: 90, boxShadowSpread: -20, boxShadowColor: 'rgba(0, 0, 0, 0.72)' },
+          }),
+          // The return eases out too, but from a deeper shadow: the card is
+          // still settling when the animation hands back control.
+          timed('ease-in-out', 100, {
+            transform: { rotateX: 0, rotateY: 0, translateY: 0, scaleX: 1, scaleY: 1 },
+            styles: { boxShadowX: 0, boxShadowY: 10, boxShadowBlur: 32, boxShadowSpread: -6, boxShadowColor: 'rgba(0, 0, 0, 0.6)' },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'morph-squash',
+    name: 'Morph Squash',
+    category: 'motion',
+    description: 'An organic bounce where every compression is paid back as a vertical stretch.',
+    preview: { shape: 'sphere', viewportBackground: 'grid-dark', stageLightingIntensity: 0.6 },
+    build: () =>
+      createTimeline({
+        name: 'Morph Squash',
+        durationMs: 1500,
+        iterationCount: 'infinite',
+        direction: 'alternate',
+        fillMode: 'both',
+        keyframes: [
+          // The two scales are reciprocal: volume is traded between the axes
+          // rather than added, which is what separates a squash from a scale.
+          timed('ease-out', 0, {
+            transform: { translateY: 0, scaleX: 1, scaleY: 1 },
+            styles: { boxShadowBlur: 40, boxShadowSpread: -10 },
+          }),
+          timed('ease-out', 22, {
+            transform: { translateY: 36, scaleX: 1.2, scaleY: 0.78 },
+            filter: { brightness: 104 },
+            styles: { boxShadowBlur: 16, boxShadowSpread: -4 },
+          }),
+          timed('ease-in-out', 48, {
+            transform: { translateY: -46, scaleX: 0.88, scaleY: 1.16 },
+            filter: { brightness: 118 },
+            styles: { boxShadowBlur: 64, boxShadowSpread: -16 },
+          }),
+          timed('ease-in-out', 74, {
+            transform: { translateY: 14, scaleX: 1.06, scaleY: 0.94 },
+            filter: { brightness: 96 },
+            styles: { boxShadowBlur: 28, boxShadowSpread: -7 },
+          }),
+          // Closes on the opening pose so `alternate` reverses cleanly.
+          timed('ease-in-out', 100, {
+            transform: { translateY: 0, scaleX: 1, scaleY: 1 },
+            filter: { brightness: 100 },
+            styles: { boxShadowBlur: 40, boxShadowSpread: -10 },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'orbit-spin',
+    name: 'Orbit Spin',
+    category: 'motion',
+    description: 'A body on a tilted orbit, travelling in Z so the turn reads as depth, not a flat spin.',
+    preview: {
+      shape: 'sphere',
+      viewportBackground: 'grid-dark',
+      showAxes: true,
+      showPerspectiveGuide: true,
+      stageLightingIntensity: 0.8,
+    },
+    build: () =>
+      createTimeline({
+        name: 'Orbit Spin',
+        durationMs: 3000,
+        iterationCount: 'infinite',
+        direction: 'normal',
+        fillMode: 'both',
+        keyframes: [
+          // Four quarter turns. Each quarter crosses Z and pairs it with a
+          // matching scale, so the apparent size change is caused by the travel
+          // rather than animated alongside it.
+          timed('linear', 0, {
+            transform: { rotateY: 0, rotateX: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+            filter: { brightness: 100 },
+            styles: { boxShadowBlur: 44, boxShadowSpread: -12 },
+          }),
+          timed('linear', 25, {
+            transform: { rotateY: 90, rotateX: -28, translateZ: 120, scaleX: 1.14, scaleY: 1.14, scaleZ: 1.14 },
+            filter: { brightness: 128 },
+            styles: { boxShadowBlur: 72, boxShadowSpread: -22 },
+          }),
+          timed('linear', 50, {
+            transform: { rotateY: 180, rotateX: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+            filter: { brightness: 100 },
+            styles: { boxShadowBlur: 44, boxShadowSpread: -12 },
+          }),
+          timed('linear', 75, {
+            transform: { rotateY: 270, rotateX: 28, translateZ: -120, scaleX: 0.86, scaleY: 0.86, scaleZ: 0.86 },
+            filter: { brightness: 78 },
+            styles: { boxShadowBlur: 20, boxShadowSpread: -4 },
+          }),
+          timed('linear', 100, {
+            transform: { rotateY: 360, rotateX: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+            filter: { brightness: 100 },
+            styles: { boxShadowBlur: 44, boxShadowSpread: -12 },
+          }),
+        ],
+      }),
+  },
 ] as const;
 
 /**

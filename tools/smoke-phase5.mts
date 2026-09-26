@@ -22,6 +22,7 @@ import { DEFAULT_PROJECT, createDefaultProject } from '@/lib/defaultProject';
 import {
   DEFAULT_EXPORT_OPTIONS,
   EXPORT_TARGETS,
+  PREVIEW_LIMITS,
   addTimeline,
   createKeyframePoint,
   createProjectRecord,
@@ -176,7 +177,9 @@ check('resolveSegmentAtOffset picks the outgoing segment and its local progress'
 // --- Preset catalogue -------------------------------------------------------
 
 check('every preset builds a valid, animatable timeline', () => {
-  assert.ok(ANIMATION_PRESETS.length >= 8, 'expected at least eight presets');
+  // The floor tracks the catalogue, so a preset dropped from `lib/presets`
+  // fails here instead of silently shrinking the drawer.
+  assert.ok(ANIMATION_PRESETS.length >= 20, `expected at least twenty presets, found ${ANIMATION_PRESETS.length}`);
   for (const preset of ANIMATION_PRESETS) {
     const timeline = preset.build();
     assert.ok(timeline.keyframes.length >= 2, `${preset.id} needs at least two keyframes`);
@@ -201,6 +204,22 @@ check('preset ids and names are unique', () => {
   for (const preset of ANIMATION_PRESETS) {
     assert.ok(preset.description.length > 0, `${preset.id} needs a description`);
     assert.ok(preset.category in PRESET_CATEGORY_LABELS, `${preset.id} has an unknown category`);
+  }
+});
+
+check('every preset ships camera settings that show the animation off', () => {
+  for (const preset of ANIMATION_PRESETS) {
+    // A preset that opens on the wrong stage is a preset that cannot be judged:
+    // the drawer applies `preview` verbatim, so these are the only controls the
+    // author has over how the timeline first reads.
+    assert.ok(preset.preview.shape, `${preset.id} needs a preview shape`);
+    const lighting = preset.preview.stageLightingIntensity;
+    if (lighting !== undefined) {
+      assert.ok(
+        lighting >= PREVIEW_LIMITS.stageLightingIntensity.min && lighting <= PREVIEW_LIMITS.stageLightingIntensity.max,
+        `${preset.id} has out-of-range stage lighting`,
+      );
+    }
   }
 });
 
