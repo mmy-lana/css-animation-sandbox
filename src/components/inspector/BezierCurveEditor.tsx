@@ -361,7 +361,10 @@ export function BezierCurveEditor({ bezier, onChange, disabled = false, animateP
         })}
       </div>
 
-      <p className="readout text-[10px] text-zinc-600">cubic-bezier({formatCubicBezier(bezier)})</p>
+      {/* `formatCubicBezier` already returns the complete `cubic-bezier(...)`
+          expression, so wrapping it in another literal produced
+          `cubic-bezier(cubic-bezier(...))` on screen. */}
+      <p className="readout text-[10px] text-zinc-400">{formatCubicBezier(bezier)}</p>
 
       {errors.length > 0 ? (
         <p role="alert" className="flex items-start gap-1 text-[10px] text-studio-danger">

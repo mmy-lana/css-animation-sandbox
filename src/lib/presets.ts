@@ -309,6 +309,358 @@ export const ANIMATION_PRESETS: readonly AnimationPreset[] = [
         ],
       }),
   },
+  {
+    id: 'float-levitate',
+    name: 'Float Levitate',
+    category: 'motion',
+    description: 'A card hangs in a slow vertical drift with a slight pitch, as if suspended in depth.',
+    preview: { shape: 'card', showPerspectiveGuide: true, stageLightingIntensity: 0.55, enableMotionTrails: false },
+    build: () =>
+      createTimeline({
+        name: 'Float Levitate',
+        durationMs: 3400,
+        iterationCount: 'infinite',
+        direction: 'alternate',
+        fillMode: 'both',
+        keyframes: [
+          timed('ease-in-out', 0, {
+            transform: { translateY: 22, translateZ: -28, rotateX: 7, rotateZ: -1.5, scaleX: 1, scaleY: 1 },
+            styles: { boxShadowY: 24, boxShadowBlur: 18, boxShadowSpread: -6 },
+          }),
+          timed('ease-in-out', 28, {
+            transform: { translateY: -10, translateZ: 18, rotateX: 3.5, rotateZ: 1, scaleX: 1.02, scaleY: 1.02 },
+            styles: { boxShadowY: 32, boxShadowBlur: 52, boxShadowSpread: -16 },
+          }),
+          timed('ease-in-out', 62, {
+            transform: { translateY: 6, translateZ: -8, rotateX: 8.5, rotateZ: -0.8, scaleX: 0.99, scaleY: 0.99 },
+            styles: { boxShadowY: 26, boxShadowBlur: 30, boxShadowSpread: -9 },
+          }),
+          // The alternate loop plays 100% back to 0%, so the closing pose has to
+          // reproduce the opening one or every cycle ends on a visible jump.
+          timed('ease-in-out', 100, {
+            transform: { translateY: 22, translateZ: -28, rotateX: 7, rotateZ: -1.5, scaleX: 1, scaleY: 1 },
+            styles: { boxShadowY: 24, boxShadowBlur: 18, boxShadowSpread: -6 },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'neon-bloom',
+    name: 'Neon Bloom',
+    category: 'attention',
+    description: 'A rhythmic cyan-to-violet border glow that blooms outward, then settles back to its resting hue.',
+    preview: { shape: 'badge', viewportBackground: 'solid-obsidian', stageLightingIntensity: 0.3 },
+    build: () =>
+      createTimeline({
+        name: 'Neon Bloom',
+        durationMs: 1500,
+        iterationCount: 'infinite',
+        direction: 'alternate',
+        fillMode: 'both',
+        keyframes: [
+          timed('ease-in', 0, {
+            transform: { scaleX: 1, scaleY: 1 },
+            filter: { blur: 1.5, brightness: 92, saturate: 110 },
+            styles: {
+              borderColor: '#00f5d4',
+              borderWidth: 2,
+              boxShadowColor: 'rgba(0, 245, 212, 0.30)',
+              boxShadowBlur: 18,
+              boxShadowSpread: -4,
+            },
+          }),
+          timed('ease-out', 38, {
+            transform: { scaleX: 1.05, scaleY: 1.05 },
+            filter: { blur: 0, brightness: 138, saturate: 170 },
+            styles: {
+              borderColor: '#22d3ee',
+              borderWidth: 3,
+              boxShadowColor: 'rgba(124, 58, 237, 0.55)',
+              boxShadowBlur: 54,
+              boxShadowSpread: -18,
+            },
+          }),
+          timed('ease-in-out', 68, {
+            transform: { scaleX: 1.01, scaleY: 1.01 },
+            filter: { blur: 0.5, brightness: 118, saturate: 140 },
+            styles: {
+              borderColor: '#a855f7',
+              borderWidth: 3,
+              boxShadowColor: 'rgba(168, 85, 247, 0.45)',
+              boxShadowBlur: 64,
+              boxShadowSpread: -24,
+            },
+          }),
+          timed('ease-in', 100, {
+            transform: { scaleX: 1, scaleY: 1 },
+            filter: { blur: 1.5, brightness: 92, saturate: 110 },
+            styles: {
+              borderColor: '#00f5d4',
+              borderWidth: 2,
+              boxShadowColor: 'rgba(0, 245, 212, 0.30)',
+              boxShadowBlur: 18,
+              boxShadowSpread: -4,
+            },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'isometric-tumble',
+    name: 'Isometric Tumble',
+    category: 'motion',
+    description: 'A cube rolls through a full 360° turn, punching out in Z depth on every quarter rotation.',
+    preview: { shape: 'cube', showAxes: true, showPerspectiveGuide: true, stageLightingIntensity: 0.8 },
+    build: () =>
+      createTimeline({
+        name: 'Isometric Tumble',
+        durationMs: 2400,
+        iterationCount: 'infinite',
+        fillMode: 'both',
+        keyframes: [
+          // The launch curves overshoot past 1 so the cube springs off the plane
+          // before it settles into the next quarter turn.
+          createKeyframePoint({
+            offset: 0,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.3, y1: 1.28, x2: 0.42, y2: 1 },
+            properties: {
+              transform: { rotateX: 0, rotateY: 0, rotateZ: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+              styles: { boxShadowBlur: 24, boxShadowSpread: -8 },
+            },
+          }),
+          timed('ease-out', 25, {
+            transform: { rotateX: -30, rotateY: 90, rotateZ: 8, translateZ: 100, scaleX: 0.93, scaleY: 0.93, scaleZ: 1.08 },
+            styles: { boxShadowBlur: 72, boxShadowSpread: -22 },
+          }),
+          createKeyframePoint({
+            offset: 50,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.3, y1: 1.28, x2: 0.42, y2: 1 },
+            properties: {
+              transform: { rotateX: 0, rotateY: 180, rotateZ: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+              styles: { boxShadowBlur: 24, boxShadowSpread: -8 },
+            },
+          }),
+          timed('ease-out', 75, {
+            transform: { rotateX: 30, rotateY: 270, rotateZ: -8, translateZ: 100, scaleX: 0.93, scaleY: 0.93, scaleZ: 1.08 },
+            styles: { boxShadowBlur: 72, boxShadowSpread: -22 },
+          }),
+          // A full 360° yaw returns to the opening orientation, so the infinite
+          // loop restarts without a visible discontinuity.
+          createKeyframePoint({
+            offset: 100,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.3, y1: 1.28, x2: 0.42, y2: 1 },
+            properties: {
+              transform: { rotateX: 0, rotateY: 360, rotateZ: 0, translateZ: 0, scaleX: 1, scaleY: 1, scaleZ: 1 },
+              styles: { boxShadowBlur: 24, boxShadowSpread: -8 },
+            },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'shutter-reveal',
+    name: 'Shutter Reveal',
+    category: 'material',
+    description: 'A camera-shutter snap: the frame squeezes open, overshoots, and settles as its blur clears.',
+    preview: { shape: 'card', viewportBackground: 'checkerboard', stageLightingIntensity: 0.45 },
+    build: () =>
+      createTimeline({
+        name: 'Shutter Reveal',
+        durationMs: 850,
+        fillMode: 'both',
+        keyframes: [
+          timed('ease-in', 0, {
+            transform: { scaleX: 0.08, scaleY: 1, translateZ: -60 },
+            filter: { blur: 16, contrast: 45, brightness: 55, saturate: 60 },
+            styles: { opacity: 0, backgroundColor: '#09090b', borderRadius: 2 },
+          }),
+          timed('ease-out', 22, {
+            transform: { scaleX: 0.44, scaleY: 1.02, translateZ: 0 },
+            filter: { blur: 7, contrast: 78, brightness: 88, saturate: 90 },
+            styles: { opacity: 1, backgroundColor: '#121217', borderRadius: 8 },
+          }),
+          createKeyframePoint({
+            offset: 44,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.16, y1: 1.2, x2: 0.3, y2: 1 },
+            properties: {
+              transform: { scaleX: 1.14, scaleY: 1.05, translateZ: 40 },
+              filter: { blur: 0, contrast: 145, brightness: 124, saturate: 130 },
+              styles: { opacity: 1, backgroundColor: '#18181f', borderRadius: 22, borderColor: '#00f5d4' },
+            },
+          }),
+          timed('ease-out', 100, {
+            transform: { scaleX: 1, scaleY: 1, translateZ: 0 },
+            filter: { blur: 0, contrast: 100, brightness: 100, saturate: 100 },
+            styles: { opacity: 1, backgroundColor: '#18181f', borderRadius: 16, borderColor: '#00f5d4' },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'magnetic-tilt',
+    name: 'Magnetic Tilt',
+    category: 'material',
+    description: 'A specular band tracks across a skewed panel while the surface drifts through perspective.',
+    preview: {
+      shape: 'card',
+      viewportBackground: 'dots',
+      showPerspectiveGuide: true,
+      stageLightingIntensity: 0.95,
+    },
+    build: () =>
+      createTimeline({
+        name: 'Magnetic Tilt',
+        durationMs: 2000,
+        iterationCount: 'infinite',
+        direction: 'alternate',
+        fillMode: 'both',
+        keyframes: [
+          timed('ease-in-out', 0, {
+            transform: { skewX: -14, rotateX: 9, rotateY: -18, translateX: -26, translateZ: -48 },
+            filter: { brightness: 72, contrast: 125, saturate: 55 },
+            styles: { backgroundColor: '#0b1120', borderRadius: 22 },
+          }),
+          timed('ease-in-out', 32, {
+            transform: { skewX: 0, rotateX: 0, rotateY: 0, translateX: 0, translateZ: 22 },
+            filter: { brightness: 148, contrast: 104, saturate: 135 },
+            styles: { backgroundColor: '#1e1b4b', borderRadius: 14 },
+          }),
+          timed('ease-in-out', 66, {
+            transform: { skewX: 9, rotateX: -5, rotateY: 12, translateX: 20, translateZ: 4 },
+            filter: { brightness: 112, contrast: 118, saturate: 112 },
+            styles: { backgroundColor: '#312e81', borderRadius: 18 },
+          }),
+          timed('ease-in-out', 100, {
+            transform: { skewX: -14, rotateX: 9, rotateY: -18, translateX: -26, translateZ: -48 },
+            filter: { brightness: 72, contrast: 125, saturate: 55 },
+            styles: { backgroundColor: '#0b1120', borderRadius: 22 },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'type-staccato',
+    name: 'Type Staccato',
+    category: 'type',
+    description: 'A headline lands in stepped beats, each hit overshooting before the next cut lands.',
+    preview: { shape: 'typography', viewportBackground: 'grid-dark', enableMotionTrails: true },
+    build: () =>
+      createTimeline({
+        name: 'Type Staccato',
+        durationMs: 1700,
+        iterationCount: 'infinite',
+        fillMode: 'both',
+        keyframes: [
+          timed('ease-out', 0, {
+            transform: { translateY: 76, skewX: 6, scaleX: 0.95, scaleY: 1.16 },
+            filter: { blur: 12, brightness: 88 },
+            styles: { opacity: 0, borderWidth: 0, borderRadius: 6 },
+          }),
+          // Stepped easing holds each beat before cutting to the next, which is
+          // what separates a staccato from an ordinary ease.
+          timed('step-end', 22, {
+            transform: { translateY: -14, skewX: -2, scaleX: 1.06, scaleY: 0.94 },
+            filter: { blur: 0, brightness: 122 },
+            styles: { opacity: 1, borderWidth: 2, borderRadius: 14 },
+          }),
+          timed('step-start', 44, {
+            transform: { translateY: 10, skewX: 0, scaleX: 0.99, scaleY: 1.04 },
+            filter: { blur: 0, brightness: 108 },
+            styles: { opacity: 1, borderWidth: 2, borderRadius: 12 },
+          }),
+          createKeyframePoint({
+            offset: 62,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.22, y1: 1.42, x2: 0.36, y2: 1 },
+            properties: {
+              transform: { translateY: -6, skewX: 0, scaleX: 1.03, scaleY: 0.98 },
+              filter: { blur: 0, brightness: 115 },
+              styles: { opacity: 1, borderWidth: 2, borderRadius: 12 },
+            },
+          }),
+          timed('step-end', 80, {
+            transform: { translateY: 2, skewX: 0, scaleX: 1, scaleY: 1 },
+            filter: { blur: 0, brightness: 100 },
+            styles: { opacity: 1, borderWidth: 2, borderRadius: 12 },
+          }),
+          // The cycle exits fully transparent, so the infinite restart reads as a
+          // cut rather than a jump back to the 76px offset.
+          timed('ease-in-out', 100, {
+            transform: { translateY: -18, skewX: 0, scaleX: 1, scaleY: 0.96 },
+            filter: { blur: 2, brightness: 92 },
+            styles: { opacity: 0, borderWidth: 2, borderRadius: 12 },
+          }),
+        ],
+      }),
+  },
+  {
+    id: 'rubber-snap',
+    name: 'Rubber Snap',
+    category: 'motion',
+    description: 'A taut release: the element whips across, then rings down through damped overshoots.',
+    preview: { shape: 'sphere', viewportBackground: 'grid-dark', stageLightingIntensity: 0.4 },
+    build: () =>
+      createTimeline({
+        name: 'Rubber Snap',
+        durationMs: 1300,
+        iterationCount: 'infinite',
+        direction: 'alternate',
+        fillMode: 'both',
+        keyframes: [
+          // The release curve starts above 1, so the launch accelerates harder
+          // than the decay that follows it — that asymmetry is the snap.
+          createKeyframePoint({
+            offset: 0,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.72, y1: -0.42, x2: 0.24, y2: 1.4 },
+            properties: {
+              transform: { translateX: -128, rotateZ: -14, scaleX: 0.68, scaleY: 1.28 },
+              filter: { brightness: 92, saturate: 70 },
+              styles: { boxShadowBlur: 16, boxShadowSpread: -4 },
+            },
+          }),
+          createKeyframePoint({
+            offset: 24,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.18, y1: 1.5, x2: 0.4, y2: 1 },
+            properties: {
+              transform: { translateX: 46, rotateZ: 9, scaleX: 1.26, scaleY: 0.78 },
+              filter: { brightness: 134, saturate: 150 },
+              styles: { boxShadowBlur: 60, boxShadowSpread: -18 },
+            },
+          }),
+          timed('ease-out', 46, {
+            transform: { translateX: -18, rotateZ: -5, scaleX: 0.9, scaleY: 1.1 },
+            filter: { brightness: 104, saturate: 100 },
+            styles: { boxShadowBlur: 32, boxShadowSpread: -9 },
+          }),
+          timed('ease-out', 64, {
+            transform: { translateX: 8, rotateZ: 3, scaleX: 1.08, scaleY: 0.93 },
+            filter: { brightness: 112, saturate: 110 },
+            styles: { boxShadowBlur: 26, boxShadowSpread: -7 },
+          }),
+          timed('ease-out', 80, {
+            transform: { translateX: -3, rotateZ: -1, scaleX: 0.97, scaleY: 1.03 },
+            filter: { brightness: 100, saturate: 100 },
+            styles: { boxShadowBlur: 20, boxShadowSpread: -5 },
+          }),
+          createKeyframePoint({
+            offset: 100,
+            timingFunction: 'custom-cubic',
+            bezier: { x1: 0.72, y1: -0.42, x2: 0.24, y2: 1.4 },
+            properties: {
+              transform: { translateX: -128, rotateZ: -14, scaleX: 0.68, scaleY: 1.28 },
+              filter: { brightness: 92, saturate: 70 },
+              styles: { boxShadowBlur: 16, boxShadowSpread: -4 },
+            },
+          }),
+        ],
+      }),
+  },
 ] as const;
 
 /**
