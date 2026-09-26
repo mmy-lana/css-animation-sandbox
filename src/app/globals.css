@@ -1,22 +1,250 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Design foundation — "High-End Creative Studio"
+   Deep obsidian surfaces, metallic hairlines, one cyan signal colour and a
+   violet counterpoint. Every token below is consumed as a Tailwind utility
+   (bg-obsidian-900, text-studio-accent, shadow-panel, …).
+   ========================================================================== */
 
 @theme {
+  /* Surfaces */
   --color-obsidian-950: #09090b;
   --color-obsidian-900: #121217;
   --color-obsidian-850: #18181f;
   --color-obsidian-800: #1f1f28;
-  --color-studio-border: #27272a;
+  --color-obsidian-700: #27272a;
+  --color-obsidian-600: #3f3f46;
+
+  /* Accents */
   --color-studio-accent: #00f5d4;
+  --color-studio-accent-soft: #5eead4;
+  --color-studio-accent-muted: #0f766e;
   --color-studio-violet: #7928ca;
+  --color-studio-violet-soft: #a855f7;
+  --color-studio-danger: #f43f5e;
+  --color-studio-warning: #fbbf24;
+  --color-studio-success: #34d399;
+
+  /* Typography */
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+  /* Shape & depth */
+  --radius-panel: 14px;
+  --radius-control: 10px;
+  --shadow-panel: 0 24px 60px -32px rgb(0 0 0 / 0.95);
+  --shadow-raised: 0 2px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 28px -20px rgb(0 0 0 / 0.9);
+  --shadow-glow-accent: 0 0 0 1px rgb(0 245 212 / 0.32), 0 20px 44px -26px rgb(0 245 212 / 0.65);
+  --shadow-glow-violet: 0 0 0 1px rgb(121 40 202 / 0.45), 0 20px 44px -26px rgb(121 40 202 / 0.7);
+
+  /* Motion */
+  --ease-studio: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Studio motion primitives */
+  --animate-fade-rise: fade-rise 220ms var(--ease-studio) both;
+  --animate-scale-in: scale-in 160ms var(--ease-studio) both;
+  --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-spin-slow: spin 1.1s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.2s var(--ease-emphasized) infinite;
 }
 
-:root {
-  color-scheme: dark;
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-body {
-  background-color: #09090b;
-  color: #f4f4f5;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  overflow-x: hidden;
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -140% 0;
+  }
+  100% {
+    background-position: 240% 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --studio-scrollbar-thumb: #2b2b33;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-obsidian-950);
+    background-image:
+      radial-gradient(60rem 40rem at 12% -10%, rgb(0 245 212 / 0.06), transparent 60%),
+      radial-gradient(50rem 34rem at 92% 8%, rgb(121 40 202 / 0.08), transparent 62%);
+    background-attachment: fixed;
+    color: #f4f4f5;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+  }
+
+  ::selection {
+    background-color: rgb(0 245 212 / 0.28);
+    color: #ecfeff;
+  }
+
+  /* Focus visibility is owned by components; the global ring is a safety net. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-studio-accent);
+    outline-offset: 2px;
+  }
+
+  /* Range inputs are fully restyled by `components/ui/Slider`. */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  input[type='color'] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  input[type='color']::-webkit-color-swatch {
+    border: none;
+    border-radius: inherit;
+  }
+
+  input[type='color']::-moz-color-swatch {
+    border: none;
+    border-radius: inherit;
+  }
+
+  input::placeholder {
+    color: #52525b;
+  }
+
+  * {
+    scrollbar-color: var(--studio-scrollbar-thumb) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--studio-scrollbar-thumb);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #3d3d47;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Custom utilities
+   -------------------------------------------------------------------------- */
+
+/* Hairline separator used between inspector sections. */
+@utility hairline {
+  border-color: color-mix(in oklab, var(--color-studio-accent) 8%, var(--color-obsidian-700));
+}
+
+/* Frosted panel surface with a 1px metallic edge. */
+@utility panel-surface {
+  background-color: color-mix(in oklab, var(--color-obsidian-900) 92%, transparent);
+  border: 1px solid var(--color-obsidian-700);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(12px);
+}
+
+/* Placeholder block for empty states inside panels. */
+@utility empty-grid {
+  background-image:
+    linear-gradient(to right, rgb(39 39 42 / 0.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(39 39 42 / 0.55) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Numeric/monospace label treatment for studio readouts. */
+@utility readout {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* Truncating single-line text for long identifiers. */
+@utility text-truncate-tight {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
