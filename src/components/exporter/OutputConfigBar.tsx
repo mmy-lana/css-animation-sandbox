@@ -2,15 +2,8 @@
 
 import { useMemo } from 'react';
 import { cn } from '@/lib/cn';
-import { Select } from '@/components/ui/Select';
 import { Switch } from '@/components/ui/Switch';
-import {
-  EXPORT_TARGETS,
-  EXPORT_TARGET_LABELS,
-  validateExportOptions,
-  type ExportOptions,
-  type ExportTarget,
-} from '@/types/sandbox';
+import { validateExportOptions, type ExportOptions } from '@/types/sandbox';
 
 export interface OutputConfigBarProps {
   options: ExportOptions;
@@ -19,17 +12,14 @@ export interface OutputConfigBarProps {
   className?: string;
 }
 
-const TARGET_OPTIONS: ReadonlyArray<{ value: ExportTarget; label: string }> = EXPORT_TARGETS.map((value) => ({
-  value,
-  label: EXPORT_TARGET_LABELS[value],
-}));
-
 /**
  * Export configuration.
  *
- * Identifiers are validated on every keystroke but only normalized on commit,
- * so the field keeps showing what the user typed while the error message
- * disappears the moment the name becomes a legal CSS identifier.
+ * The target itself is a tab in the code viewer below, so this bar only holds
+ * values: identifiers and the output toggles. Identifiers are validated on every
+ * keystroke but only normalized on commit, so the field keeps showing what the
+ * user typed while the error message disappears the moment the name becomes a
+ * legal CSS identifier.
  */
 export function OutputConfigBar({ options, onChange, disabled = false, className }: OutputConfigBarProps) {
   const errors = useMemo(() => validateExportOptions(options), [options]);
@@ -46,15 +36,7 @@ export function OutputConfigBar({ options, onChange, disabled = false, className
       className={cn('flex flex-col gap-3 rounded-lg border border-obsidian-700/60 bg-obsidian-850/40 p-3', className)}
       aria-label="Export options"
     >
-      <div className="grid gap-2 sm:grid-cols-3">
-        <Select
-          label="Target"
-          value={options.target}
-          options={TARGET_OPTIONS}
-          onChange={(value) => onChange({ target: value }, true)}
-          size="sm"
-          disabled={disabled}
-        />
+      <div className="grid gap-2 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-[10px] tracking-wide text-zinc-500 uppercase">
           Class name
           <input

@@ -122,7 +122,13 @@ export function ExportDrawer({
     >
       <div className="flex flex-col gap-4">
         <OutputConfigBar options={options} onChange={onOptionsChange} />
-        <CodeViewer code={code} target={options.target} error={displayError} downloadBaseName={options.keyframeRuleName} />
+        <CodeViewer
+          code={code}
+          target={options.target}
+          onTargetChange={(target) => onOptionsChange({ target }, true)}
+          error={displayError}
+          downloadBaseName={options.keyframeRuleName}
+        />
       </div>
     </Modal>
   );
