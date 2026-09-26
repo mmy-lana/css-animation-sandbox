@@ -74,7 +74,7 @@ export function TransformControls({ value, onChange, disabled = false, className
       >
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] tracking-wide text-zinc-500 uppercase">Axis unit</span>
+            <span className="text-[10px] tracking-wide text-zinc-400 uppercase">Axis unit</span>
             <div className="w-[104px] shrink-0">
               <Select
                 value={value.translateUnit}
@@ -220,7 +220,7 @@ export function TransformControls({ value, onChange, disabled = false, className
         </div>
       </PropertySection>
 
-      <p className="readout px-3 py-2 text-[9px] text-zinc-600" title={liveTransform}>
+      <p className="readout px-3 py-2 text-[9px] text-zinc-400" title={liveTransform}>
         {liveTransform}
       </p>
     </div>

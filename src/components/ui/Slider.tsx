@@ -118,7 +118,10 @@ export function Slider({
         <div className="relative flex h-6 items-center">
           <div
             className={cn(
-              'absolute inset-x-0 h-1.5 overflow-hidden rounded-full border border-obsidian-700 bg-obsidian-800',
+              // The thumb carries the control identity, but the rail is what
+              // shows how much travel is available, so it is held to the same
+              // 3:1 non-text floor as the input wells it sits beside.
+              'absolute inset-x-0 h-1.5 overflow-hidden rounded-full border border-zinc-500 bg-obsidian-800',
               trackClassName,
             )}
             aria-hidden="true"

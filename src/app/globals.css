@@ -168,8 +168,19 @@
     border-radius: inherit;
   }
 
-  input::placeholder {
-    color: #52525b;
+  /*
+   * A placeholder is the only text an empty field shows, so it is held to the
+   * same 4.5:1 floor as every other string rather than being treated as
+   * decoration. Ratios are measured against the four obsidian surfaces this
+   * app actually paints on, using the tokens Tailwind v4 emits (#9f9fa9, not
+   * the v3 #a1a1aa):
+   *   zinc-600 #52525c  2.12:1 - 2.58:1   fail, this was the previous value
+   *   zinc-500 #71717b  3.39:1 - 4.12:1   fail, under AA for text this size
+   *   zinc-400 #9f9fa9  6.23:1 - 7.59:1   pass
+   */
+  input::placeholder,
+  textarea::placeholder {
+    color: #9f9fa9;
   }
 
   * {

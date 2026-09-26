@@ -228,10 +228,13 @@ export function Select<T extends string = string>({
           onKeyDown={handleKeyDown}
           className={cn(
             'flex w-full items-center justify-between gap-2 rounded-[10px] border bg-obsidian-850 text-left text-zinc-100',
-            'transition-colors duration-150 hover:border-obsidian-600',
+            'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent focus-visible:ring-offset-1 focus-visible:ring-offset-obsidian-950',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            hasError ? 'border-studio-danger/70' : 'border-obsidian-700',
+            // Same 1.4.11 reasoning as NumberInput: obsidian-700 is 1.19:1
+            // against this well, so the resting border is the lightest token
+            // that clears 3:1 and hover takes it one step further up.
+            hasError ? 'border-studio-danger/70' : 'border-zinc-500 hover:border-zinc-300',
             open && 'border-studio-accent/70',
             triggerHeight,
             triggerClassName,
@@ -262,7 +265,7 @@ export function Select<T extends string = string>({
             onKeyDown={handleKeyDown}
             className={cn(
               'absolute top-[calc(100%+4px)] left-0 z-50 max-h-64 w-full overflow-y-auto overscroll-contain',
-              'rounded-[12px] border border-obsidian-700 bg-obsidian-900/95 p-1 shadow-[var(--shadow-panel)]',
+              'rounded-[12px] border border-zinc-500 bg-obsidian-900/95 p-1 shadow-[var(--shadow-panel)]',
               'animate-[var(--animate-scale-in)] backdrop-blur-xl',
             )}
           >

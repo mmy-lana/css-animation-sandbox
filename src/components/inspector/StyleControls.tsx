@@ -174,7 +174,7 @@ export function StyleControls({ value, onChange, disabled = false, className }: 
             />
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] tracking-wide text-zinc-500 uppercase">Inset</span>
+            <span className="text-[10px] tracking-wide text-zinc-400 uppercase">Inset</span>
             <Switch
               checked={value.boxShadowInset}
               disabled={disabled}
@@ -182,7 +182,7 @@ export function StyleControls({ value, onChange, disabled = false, className }: 
               onCheckedChange={(boxShadowInset) => patch({ boxShadowInset })}
             />
           </div>
-          <p className="readout px-2 py-1.5 text-[9px] text-zinc-600" title={liveShadow}>
+          <p className="readout px-2 py-1.5 text-[9px] text-zinc-400" title={liveShadow}>
             {liveShadow}
           </p>
         </div>
@@ -230,7 +230,7 @@ export function StyleControls({ value, onChange, disabled = false, className }: 
                     'disabled:pointer-events-none',
                     active
                       ? 'border-studio-accent/60 bg-studio-accent/15 text-studio-accent'
-                      : 'border-obsidian-700 text-zinc-500 hover:border-obsidian-600 hover:text-zinc-300',
+                      : 'border-obsidian-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-100',
                   )}
                 >
                   {preset.label}

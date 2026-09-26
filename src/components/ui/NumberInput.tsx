@@ -220,7 +220,10 @@ export function NumberInput({
         className={cn(
           'flex h-9 items-center overflow-hidden rounded-[10px] border bg-obsidian-850 transition-colors duration-150',
           'focus-within:border-studio-accent/70',
-          hasError ? 'border-studio-danger/70' : 'border-obsidian-700',
+          // obsidian-700 is 1.19:1 against this well, which fails 1.4.11 for a
+          // control whose boundary is the only cue that it is a control at all.
+          // zinc-500 is the first token in the palette that clears 3:1 here.
+          hasError ? 'border-studio-danger/70' : 'border-zinc-500 hover:border-zinc-300',
           scrubbing && 'border-studio-accent',
           disabled && 'opacity-50',
         )}
@@ -231,7 +234,7 @@ export function NumberInput({
           disabled={disabled}
           aria-label={`Decrease ${typeof label === 'string' ? label : 'value'}`}
           onClick={() => applyValue(value - stepSize, true)}
-          className="grid h-full w-7 shrink-0 place-items-center text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+          className="grid h-full w-7 shrink-0 place-items-center border-r border-zinc-500 text-zinc-400 transition-colors hover:border-zinc-300 hover:bg-obsidian-800 hover:text-zinc-100 disabled:pointer-events-none"
         >
           <Minus width={12} height={12} aria-hidden="true" />
         </button>
@@ -254,7 +257,7 @@ export function NumberInput({
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={commitDraft}
-            className="readout h-full w-full min-w-0 appearance-none border-x border-obsidian-700/60 bg-transparent px-2 text-center text-xs text-zinc-100 outline-none [appearance:textfield] focus-visible:outline-none disabled:cursor-not-allowed [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="readout h-full w-full min-w-0 appearance-none border-x border-zinc-500 bg-transparent px-2 text-center text-xs text-zinc-100 outline-none [appearance:textfield] focus-visible:outline-none disabled:cursor-not-allowed [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
 
@@ -264,7 +267,7 @@ export function NumberInput({
           disabled={disabled}
           aria-label={`Increase ${typeof label === 'string' ? label : 'value'}`}
           onClick={() => applyValue(value + stepSize, true)}
-          className="grid h-full w-7 shrink-0 place-items-center text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+          className="grid h-full w-7 shrink-0 place-items-center border-l border-zinc-500 text-zinc-400 transition-colors hover:border-zinc-300 hover:bg-obsidian-800 hover:text-zinc-100 disabled:pointer-events-none"
         >
           <Plus width={12} height={12} aria-hidden="true" />
         </button>

@@ -147,7 +147,7 @@ export function FilterControls({ value, onChange, disabled = false, className }:
         </div>
       </PropertySection>
 
-      <p className="readout px-3 py-2 text-[9px] text-zinc-600" title={liveFilter}>
+      <p className="readout px-3 py-2 text-[9px] text-zinc-400" title={liveFilter}>
         {liveFilter === 'none' ? 'filter: none' : liveFilter}
       </p>
     </div>

@@ -87,8 +87,8 @@ export function PresetDrawer({
     >
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="flex flex-1 items-center gap-2 rounded-md border border-obsidian-700 bg-obsidian-900 px-2">
-            <Search width={13} height={13} aria-hidden="true" className="text-zinc-600" />
+          <label className="flex flex-1 items-center gap-2 rounded-md border border-zinc-500 bg-obsidian-900 px-2">
+            <Search width={13} height={13} aria-hidden="true" className="text-zinc-400" />
             <span className="sr-only">Search presets</span>
             <input
               type="search"
@@ -110,7 +110,7 @@ export function PresetDrawer({
                   'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-studio-accent',
                   filter === option.value
                     ? 'border-studio-accent/60 bg-studio-accent/10 text-studio-accent'
-                    : 'border-obsidian-700 text-zinc-400 hover:border-obsidian-600 hover:text-zinc-200',
+                    : 'border-obsidian-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-100',
                 )}
               >
                 {option.label}
@@ -121,7 +121,7 @@ export function PresetDrawer({
 
         {totalMatches === 0 ? (
           <div className="empty-grid flex flex-col items-center gap-2 rounded-lg border border-dashed border-obsidian-600 p-8 text-center">
-            <Sparkles width={20} height={20} aria-hidden="true" className="text-zinc-500" />
+            <Sparkles width={20} height={20} aria-hidden="true" className="text-zinc-400" />
             <p className="text-[11px] text-zinc-400">No preset matches “{query.trim()}”.</p>
             <Button
               variant="secondary"
@@ -140,7 +140,7 @@ export function PresetDrawer({
               <section key={group.category} aria-labelledby={`preset-group-${group.category}`}>
                 <h3
                   id={`preset-group-${group.category}`}
-                  className="mb-2 text-[10px] tracking-widest text-zinc-500 uppercase"
+                  className="mb-2 text-[10px] font-semibold tracking-widest text-zinc-300 uppercase"
                 >
                   {group.label}
                 </h3>
@@ -155,7 +155,7 @@ export function PresetDrawer({
         )}
 
         {isFiltered ? (
-          <p className="readout text-[9px] text-zinc-600">
+          <p className="readout text-[9px] text-zinc-400">
             {totalMatches} of {ANIMATION_PRESETS.length} presets shown
           </p>
         ) : null}
@@ -178,12 +178,12 @@ function PresetCard({
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1">
           <h4 className="truncate-tight text-xs font-medium text-zinc-100">{preset.name}</h4>
-          <p className="mt-0.5 text-[10px] leading-snug text-zinc-500">{preset.description}</p>
+          <p className="mt-0.5 text-[10px] leading-snug text-zinc-400">{preset.description}</p>
         </div>
         <Layers width={13} height={13} aria-hidden="true" className="mt-0.5 shrink-0 text-studio-violet-soft" />
       </div>
 
-      <p className="readout text-[9px] text-zinc-600">
+      <p className="readout text-[9px] text-zinc-400">
         {preview.keyframes.length} keyframes · {formatMillisecondsAsSeconds(preview.durationMs)} ·{' '}
         {preview.iterationCount === 'infinite' ? 'infinite' : `${preview.iterationCount}×`} · {preview.direction}
       </p>
