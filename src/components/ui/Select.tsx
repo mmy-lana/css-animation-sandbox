@@ -10,6 +10,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { Check, ChevronDown, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
@@ -62,9 +63,20 @@ export function Select<T extends string = string>({
   const listboxRef = useRef<HTMLUListElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [typeAhead, setTypeAhead] = useState('');
+  const [coords, setCoords] = useState<{ top: number; left: number; width: number; placement: 'bottom' | 'top' }>({
+    top: 0,
+    left: 0,
+    width: 0,
+    placement: 'bottom',
+  });
   const typeAheadTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const selectedIndex = useMemo(() => options.findIndex((option) => option.value === value), [options, value]);
   const selected = selectedIndex >= 0 ? options[selectedIndex] : undefined;
@@ -102,17 +114,46 @@ export function Select<T extends string = string>({
     [closeMenu, onChange, options],
   );
 
+  const updateCoords = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const menuHeight = 240;
+    const placeTop = spaceBelow < menuHeight && spaceAbove > spaceBelow;
+    setCoords({
+      top: placeTop ? rect.top - 4 : rect.bottom + 4,
+      left: rect.left,
+      width: rect.width,
+      placement: placeTop ? 'top' : 'bottom',
+    });
+  }, []);
+
   useEffect(() => {
     if (!open) return;
+    updateCoords();
     const listbox = listboxRef.current;
     if (listbox) listbox.focus({ preventScroll: true });
 
     const handlePointerDown = (event: PointerEvent): void => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (!triggerRef.current?.contains(target) && !listboxRef.current?.contains(target)) {
+        setOpen(false);
+      }
     };
+
+    const handleScrollOrResize = () => updateCoords();
+
     document.addEventListener('pointerdown', handlePointerDown);
-    return () => document.removeEventListener('pointerdown', handlePointerDown);
-  }, [open]);
+    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScrollOrResize, true);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+    };
+  }, [open, updateCoords]);
 
   useEffect(
     () => () => {
@@ -254,67 +295,78 @@ export function Select<T extends string = string>({
           />
         </button>
 
-        {open ? (
-          <ul
-            ref={listboxRef}
-            id={listboxId}
-            role="listbox"
-            tabIndex={-1}
-            aria-labelledby={label !== undefined ? labelId : undefined}
-            aria-activedescendant={`${listboxId}-option-${activeIndex}`}
-            onKeyDown={handleKeyDown}
-            className={cn(
-              'absolute top-[calc(100%+4px)] left-0 z-50 max-h-64 w-full overflow-y-auto overscroll-contain',
-              'rounded-[12px] border border-zinc-500 bg-obsidian-900/95 p-1 shadow-[var(--shadow-panel)]',
-              'animate-[var(--animate-scale-in)] backdrop-blur-xl',
-            )}
-          >
-            {options.length === 0 ? (
-              <li role="presentation" className="px-3 py-6 text-center text-xs text-zinc-400">
-                No options available
-              </li>
-            ) : (
-              options.map((option, index) => {
-                const isActive = index === activeIndex;
-                const isSelected = option.value === value;
-                const OptionIcon = option.icon;
-                return (
-                  <li
-                    key={option.value}
-                    id={`${listboxId}-option-${index}`}
-                    role="option"
-                    aria-selected={isSelected}
-                    aria-disabled={option.disabled || undefined}
-                    onPointerMove={() => {
-                      if (!option.disabled) setActiveIndex(index);
-                    }}
-                    onClick={() => commit(index)}
-                    className={cn(
-                      'flex cursor-pointer items-start gap-2 rounded-lg px-2.5 py-2 text-xs',
-                      'transition-colors duration-100',
-                      option.disabled && 'cursor-not-allowed opacity-40',
-                      !option.disabled && isActive && 'bg-obsidian-700/70 text-zinc-50',
-                      isSelected && 'text-studio-accent',
-                    )}
-                  >
-                    <span className="mt-0.5 w-3.5 shrink-0">
-                      {isSelected ? <Check width={13} height={13} aria-hidden="true" /> : null}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-1.5 font-medium">
-                        {OptionIcon ? <OptionIcon width={12} height={12} aria-hidden="true" /> : null}
-                        {option.label}
-                      </span>
-                      {option.description ? (
-                        <span className="mt-0.5 block text-[10px] leading-snug text-zinc-400">{option.description}</span>
-                      ) : null}
-                    </span>
+        {open && mounted && typeof document !== 'undefined'
+          ? createPortal(
+              <ul
+                ref={listboxRef}
+                id={listboxId}
+                role="listbox"
+                tabIndex={-1}
+                aria-labelledby={label !== undefined ? labelId : undefined}
+                aria-activedescendant={`${listboxId}-option-${activeIndex}`}
+                onKeyDown={handleKeyDown}
+                style={{
+                  top: `${coords.top}px`,
+                  left: `${coords.left}px`,
+                  width: `${coords.width}px`,
+                  transform: coords.placement === 'top' ? 'translateY(-100%)' : undefined,
+                }}
+                className={cn(
+                  'fixed z-[9999] max-h-64 overflow-y-auto overscroll-contain',
+                  'rounded-[12px] border border-zinc-500 bg-obsidian-900/95 p-1 shadow-[var(--shadow-panel)]',
+                  'animate-[var(--animate-scale-in)] backdrop-blur-xl',
+                )}
+              >
+                {options.length === 0 ? (
+                  <li role="presentation" className="px-3 py-6 text-center text-xs text-zinc-400">
+                    No options available
                   </li>
-                );
-              })
-            )}
-          </ul>
-        ) : null}
+                ) : (
+                  options.map((option, index) => {
+                    const isActive = index === activeIndex;
+                    const isSelected = option.value === value;
+                    const OptionIcon = option.icon;
+                    return (
+                      <li
+                        key={option.value}
+                        id={`${listboxId}-option-${index}`}
+                        role="option"
+                        aria-selected={isSelected}
+                        aria-disabled={option.disabled || undefined}
+                        onPointerMove={() => {
+                          if (!option.disabled) setActiveIndex(index);
+                        }}
+                        onClick={() => commit(index)}
+                        className={cn(
+                          'flex cursor-pointer items-start gap-2 rounded-lg px-2.5 py-2 text-xs',
+                          'transition-colors duration-100',
+                          option.disabled && 'cursor-not-allowed opacity-40',
+                          !option.disabled && isActive && 'bg-obsidian-700/70 text-zinc-50',
+                          isSelected && 'text-studio-accent',
+                        )}
+                      >
+                        <span className="mt-0.5 w-3.5 shrink-0">
+                          {isSelected ? <Check width={13} height={13} aria-hidden="true" /> : null}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center gap-1.5 font-medium">
+                            {OptionIcon ? <OptionIcon width={12} height={12} aria-hidden="true" /> : null}
+                            {option.label}
+                          </span>
+                          {option.description ? (
+                            <span className="mt-0.5 block text-[10px] leading-snug text-zinc-400">
+                              {option.description}
+                            </span>
+                          ) : null}
+                        </span>
+                      </li>
+                    );
+                  })
+                )}
+              </ul>,
+              document.body,
+            )
+          : null}
       </div>
 
       {hasError ? (
