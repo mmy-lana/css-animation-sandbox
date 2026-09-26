@@ -47,7 +47,7 @@ export function ParameterField({
   return (
     <div className={cn('space-y-1', className)}>
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[10px] font-medium tracking-wide text-zinc-500 uppercase">{label}</span>
+        <span className="text-[10px] font-medium tracking-wide text-zinc-400 uppercase">{label}</span>
         <div className="w-[104px] shrink-0">
           <NumberInput
             value={value}
@@ -76,7 +76,7 @@ export function ParameterField({
         onChange={onChange}
         onCommit={onCommit}
       />
-      {hint ? <p className="text-[9px] leading-snug text-zinc-600">{hint}</p> : null}
+      {hint ? <p className="text-[9px] leading-snug text-zinc-400">{hint}</p> : null}
     </div>
   );
 }

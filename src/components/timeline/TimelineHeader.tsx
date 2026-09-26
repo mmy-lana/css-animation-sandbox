@@ -88,7 +88,7 @@ export function TimelineHeader({
     >
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="truncate-tight text-sm font-medium text-zinc-100">{timeline.name}</h2>
-        <span className="readout rounded bg-obsidian-800 px-1.5 py-0.5 text-[9px] text-zinc-500">
+        <span className="readout rounded bg-obsidian-800 px-1.5 py-0.5 text-[9px] text-zinc-400">
           {timeline.keyframes.length} keyframes
         </span>
 
@@ -171,7 +171,7 @@ export function TimelineHeader({
         />
       </div>
 
-      <p className="readout text-[9px] text-zinc-600">
+      <p className="readout text-[9px] text-zinc-400">
         {formatMillisecondsAsSeconds(timeline.durationMs)}s active ·{' '}
         {timeline.iterationCount === 'infinite' ? 'infinite' : timeline.iterationCount} iteration
         {timeline.iterationCount === 1 || timeline.iterationCount === 'infinite' ? '' : 's'} ·{' '}

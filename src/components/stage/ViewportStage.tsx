@@ -234,7 +234,7 @@ export function ViewportStage({
             className="min-w-32"
           />
           <div className="ml-auto flex items-center gap-2">
-            <Maximize2 width={13} height={13} aria-hidden="true" className="text-zinc-500" />
+            <Maximize2 width={13} height={13} aria-hidden="true" className="text-zinc-400" />
             <Slider
               label="Stage light"
               value={preview.stageLightingIntensity}
@@ -252,7 +252,7 @@ export function ViewportStage({
         </div>
       </div>
 
-      <p className="readout flex items-center gap-1.5 border-t border-obsidian-700/60 px-2 py-1 text-[9px] text-zinc-600">
+      <p className="readout flex items-center gap-1.5 border-t border-obsidian-700/60 px-2 py-1 text-[9px] text-zinc-400">
         <Scan width={12} height={12} aria-hidden="true" />
         {enable3dGizmo ? 'Full 3D gimbal active' : 'Simplified 2D gizmo'} · drag the gizmo to edit the active keyframe
       </p>

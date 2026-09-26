@@ -57,7 +57,7 @@ export function PropertySection({
             height={13}
             aria-hidden="true"
             className={cn(
-              'shrink-0 text-zinc-500 transition-transform duration-200 ease-[var(--ease-studio)]',
+              'shrink-0 text-zinc-400 transition-transform duration-200 ease-[var(--ease-studio)]',
               open ? 'rotate-0' : '-rotate-90',
             )}
           />
@@ -68,7 +68,7 @@ export function PropertySection({
         {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
       </div>
 
-      {description && open ? <p className="px-3 pb-2 text-[10px] leading-snug text-zinc-500">{description}</p> : null}
+      {description && open ? <p className="px-3 pb-2 text-[10px] leading-snug text-zinc-400">{description}</p> : null}
 
       <div id={contentId} hidden={!open} className="space-y-3 px-3 pb-4">
         {open ? children : null}

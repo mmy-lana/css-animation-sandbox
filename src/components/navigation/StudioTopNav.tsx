@@ -45,7 +45,7 @@ export interface StudioTopNavProps {
 const STATUS_META: Readonly<
   Record<SaveStatus, { label: string; icon: typeof Save; tone: string; spin: boolean }>
 > = {
-  hydrating: { label: 'Restoring', icon: Loader2, tone: 'text-zinc-500', spin: true },
+  hydrating: { label: 'Restoring', icon: Loader2, tone: 'text-zinc-400', spin: true },
   idle: { label: 'Autosave on', icon: Cloudy, tone: 'text-zinc-400', spin: false },
   saving: { label: 'Saving', icon: Loader2, tone: 'text-studio-warning', spin: true },
   saved: { label: 'Saved', icon: Save, tone: 'text-studio-success', spin: false },
@@ -142,12 +142,12 @@ export function StudioTopNav({
               {project.name}
             </button>
           )}
-          <span className="readout truncate text-[9px] text-zinc-600">{activeTimelineName}</span>
+          <span className="readout truncate text-[9px] text-zinc-400">{activeTimelineName}</span>
         </div>
       </div>
 
       <div className="ml-auto flex flex-wrap items-center gap-1.5">
-        <p className="readout flex items-center gap-1.5 text-[9px] text-zinc-500">
+        <p className="readout flex items-center gap-1.5 text-[9px] text-zinc-400">
           <StatusIcon width={12} height={12} aria-hidden="true" className={cn(meta.tone, meta.spin && 'animate-spin')} />
           <span aria-live="polite" className={meta.tone}>
             {statusMessage || meta.label}

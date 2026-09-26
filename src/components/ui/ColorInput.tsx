@@ -172,7 +172,7 @@ export function ColorInput({
                 setInvalid(false);
               }
             }}
-            className="readout w-full bg-transparent text-[11px] text-zinc-100 outline-none placeholder:text-zinc-600"
+            className="readout w-full bg-transparent text-[11px] text-zinc-100 outline-none placeholder:text-zinc-400"
             placeholder="#00f5d4"
           />
         </div>

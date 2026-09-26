@@ -95,7 +95,7 @@ export function PresetDrawer({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search presets"
-              className="h-8 w-full bg-transparent text-xs text-zinc-100 outline-none placeholder:text-zinc-600"
+              className="h-8 w-full bg-transparent text-xs text-zinc-100 outline-none placeholder:text-zinc-400"
             />
           </label>
           <div className="flex flex-wrap gap-1" role="group" aria-label="Filter presets by category">

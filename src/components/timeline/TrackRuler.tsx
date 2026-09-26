@@ -165,7 +165,7 @@ export function TrackRuler({
                 style={{ left: `${percent}%`, transform: percent === 0 ? 'none' : 'translateX(-50%)' }}
               >
                 {isMajor ? (
-                  <span className="readout mb-0.5 -translate-x-1/2 text-[9px] leading-none text-zinc-500">
+                  <span className="readout mb-0.5 -translate-x-1/2 text-[9px] leading-none text-zinc-400">
                     {formatMillisecondsAsSeconds((percent / 100) * duration)}s
                   </span>
                 ) : null}

@@ -212,7 +212,7 @@ export function NumberInput({
           title={disabled ? undefined : 'Drag to adjust · double-click to reset the pending edit'}
         >
           {label}
-          {unit ? <span className="text-[10px] text-zinc-500 normal-case">{unit}</span> : null}
+          {unit ? <span className="text-[10px] text-zinc-400 normal-case">{unit}</span> : null}
         </label>
       ) : null}
 
@@ -231,7 +231,7 @@ export function NumberInput({
           disabled={disabled}
           aria-label={`Decrease ${typeof label === 'string' ? label : 'value'}`}
           onClick={() => applyValue(value - stepSize, true)}
-          className="grid h-full w-7 shrink-0 place-items-center text-zinc-500 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+          className="grid h-full w-7 shrink-0 place-items-center text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
         >
           <Minus width={12} height={12} aria-hidden="true" />
         </button>
@@ -264,7 +264,7 @@ export function NumberInput({
           disabled={disabled}
           aria-label={`Increase ${typeof label === 'string' ? label : 'value'}`}
           onClick={() => applyValue(value + stepSize, true)}
-          className="grid h-full w-7 shrink-0 place-items-center text-zinc-500 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
+          className="grid h-full w-7 shrink-0 place-items-center text-zinc-400 transition-colors hover:bg-obsidian-800 hover:text-studio-accent disabled:pointer-events-none"
         >
           <Plus width={12} height={12} aria-hidden="true" />
         </button>

@@ -130,7 +130,7 @@ export function ScrubBar({
 
         <div className="ml-auto flex items-baseline gap-2">
           <span className="readout text-zinc-100">{timecode}</span>
-          <span className="readout text-zinc-500">
+          <span className="readout text-zinc-400">
             / {durationLabel}s
             {delayMs > 0 ? (
               <span className="ml-1.5 text-studio-violet-soft">+{formatMillisecondsAsSeconds(delayMs)}s delay</span>
@@ -169,7 +169,7 @@ export function ScrubBar({
           />
 
           {keyframes.length === 0 ? (
-            <p className="absolute inset-0 grid place-items-center text-[10px] text-zinc-500">
+            <p className="absolute inset-0 grid place-items-center text-[10px] text-zinc-400">
               No keyframes — add one to start animating.
             </p>
           ) : (
@@ -197,7 +197,7 @@ export function ScrubBar({
           />
         </div>
 
-        <p className="readout text-[9px] text-zinc-600">
+        <p className="readout text-[9px] text-zinc-400">
           Drag the track to scrub · ← → steps 1% (Shift 5%) · Home/End jump to the endpoints
         </p>
       </div>

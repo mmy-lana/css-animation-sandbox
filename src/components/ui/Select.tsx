@@ -237,7 +237,7 @@ export function Select<T extends string = string>({
             triggerClassName,
           )}
         >
-          <span className={cn('flex min-w-0 items-center gap-2 truncate', !selected && 'text-zinc-500')}>
+          <span className={cn('flex min-w-0 items-center gap-2 truncate', !selected && 'text-zinc-400')}>
             {selected?.icon ? (
               <selected.icon width={14} height={14} aria-hidden="true" className="shrink-0 text-zinc-400" />
             ) : null}
@@ -247,7 +247,7 @@ export function Select<T extends string = string>({
             width={14}
             height={14}
             aria-hidden="true"
-            className={cn('shrink-0 text-zinc-500 transition-transform duration-200', open && 'rotate-180')}
+            className={cn('shrink-0 text-zinc-400 transition-transform duration-200', open && 'rotate-180')}
           />
         </button>
 
@@ -267,7 +267,7 @@ export function Select<T extends string = string>({
             )}
           >
             {options.length === 0 ? (
-              <li role="presentation" className="px-3 py-6 text-center text-xs text-zinc-500">
+              <li role="presentation" className="px-3 py-6 text-center text-xs text-zinc-400">
                 No options available
               </li>
             ) : (
@@ -303,7 +303,7 @@ export function Select<T extends string = string>({
                         {option.label}
                       </span>
                       {option.description ? (
-                        <span className="mt-0.5 block text-[10px] leading-snug text-zinc-500">{option.description}</span>
+                        <span className="mt-0.5 block text-[10px] leading-snug text-zinc-400">{option.description}</span>
                       ) : null}
                     </span>
                   </li>
