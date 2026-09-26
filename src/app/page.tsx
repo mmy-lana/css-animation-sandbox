@@ -309,11 +309,19 @@ export default function SandboxPage() {
 
   // --- Playback -----------------------------------------------------------
   const seekRef = useRef<(ratio: number) => void>(() => {});
-  const onProgress = useCallback((percent: number) => {
-    // The trail needs the poses, not percentages; the display properties below
-    // supply the matching transform, so the offset identifies each sample.
-    setTrailSamples((previous) => [...previous, percent.toFixed(2)].slice(-6));
-  }, []);
+  const onProgress = useCallback(
+    (percent: number) => {
+      // Trails are off by default, and nothing renders the samples while they
+      // are off, so building the ring buffer would re-render this page on every
+      // progress tick for a value no consumer can read. Bailing out first turns
+      // a default 60-120 renders per second of playback into none.
+      if (!project.preview.enableMotionTrails) return;
+      // The trail needs the poses, not percentages; the display properties below
+      // supply the matching transform, so the offset identifies each sample.
+      setTrailSamples((previous) => [...previous, percent.toFixed(2)].slice(-6));
+    },
+    [project.preview.enableMotionTrails],
+  );
 
   const engine = useAnimationEngine({
     timeline,
