@@ -5,7 +5,6 @@ import {
   applyScrubToDOMNode,
   cancelScrubAnimations,
   createCanonicalWaapiAnimation,
-  trackScrubAnimation,
 } from '@/lib/cssGenerator';
 import {
   createIterationClock,
@@ -287,7 +286,9 @@ export function useAnimationEngine({
       if (node && source.keyframes.length >= 2) {
         // Pose the target with a paused scrub effect built from the real
         // keyframes, so the stage matches the exported animation exactly.
-        trackScrubAnimation(node, applyScrubToDOMNode(node, source, safeRatio));
+        // applyScrubToDOMNode cancels the previous effect and registers the new
+        // one on the node, so there is nothing left to track from here.
+        applyScrubToDOMNode(node, source, safeRatio);
       }
       publishProgress(safeRatio * 100);
     },

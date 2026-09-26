@@ -322,6 +322,12 @@ export function createCanonicalWaapiAnimation(
  * Poses a node at a given progress ratio using a paused scrub animation.
  * Any previously created scrub animation on the node is cancelled first so
  * rapid pointer scrubbing cannot stack effects.
+ *
+ * The new animation is registered through `trackScrubAnimation` before
+ * returning. Without that registration the cancel above has nothing to find,
+ * so each pointer move would leave another paused `Animation` attached to the
+ * node's effect stack: the animation never plays, so nothing else ever tears
+ * it down, and the leak grows with every scrub tick.
  */
 export function applyScrubToDOMNode(
   node: HTMLElement,
@@ -334,6 +340,7 @@ export function applyScrubToDOMNode(
   animation.pause();
   const ratio = Number.isFinite(progressRatio) ? progressRatio : 0;
   animation.currentTime = Math.min(timeline.durationMs, Math.max(0, timeline.durationMs * ratio));
+  trackScrubAnimation(node, animation);
   return animation;
 }
 

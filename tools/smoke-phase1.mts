@@ -25,6 +25,8 @@ import {
   generateWebAnimationsApiCode,
   formatTiming,
   normalizeCssIdentifier,
+  applyScrubToDOMNode,
+  cancelScrubAnimations,
 } from '@/lib/cssGenerator';
 import { generateTailwindV4CSS } from '@/lib/tailwindFormatter';
 import { normalizeProjectRecord, migrateStoragePayload, loadActiveProject, saveActiveProject, clearActiveProject } from '@/lib/storage';
@@ -132,6 +134,105 @@ assert.equal(computeScrubPercentage(300, { ...rect, width: 0 } as DOMRect), 0);
 const segment = resolveSegmentAtOffset(exportTimeline, 55);
 assert.equal(segment?.from.id, 'a');
 assert.ok(Math.abs((segment?.localProgress ?? 0) - 0.55) < 1e-9);
+
+// --- scrub animation lifecycle ---------------------------------------------
+// Node has no WAAPI, so the node is duck-typed: the scrub path only touches
+// node.animate(), the returned animation's pause/currentTime/cancel, and the
+// registration flag the node itself carries.
+interface FakeAnimation {
+  currentTime: number;
+  paused: boolean;
+  cancelCalls: number;
+  pause(): void;
+  cancel(): void;
+}
+interface FakeNode {
+  created: FakeAnimation[];
+  options: KeyframeAnimationOptions[];
+  animate: (keyframes: Keyframe[], options: KeyframeAnimationOptions) => FakeAnimation;
+}
+
+const makeNode = (): FakeNode => {
+  const created: FakeAnimation[] = [];
+  const options: KeyframeAnimationOptions[] = [];
+  return {
+    created,
+    options,
+    animate: (_keyframes, animationOptions) => {
+      const animation: FakeAnimation = {
+        currentTime: 0,
+        paused: false,
+        cancelCalls: 0,
+        pause() {
+          animation.paused = true;
+        },
+        cancel() {
+          animation.cancelCalls += 1;
+        },
+      };
+      created.push(animation);
+      options.push(animationOptions);
+      return animation;
+    },
+  };
+};
+
+const scrubTarget = makeNode();
+// The generator only ever calls the four members stubbed above, so widening
+// the stub to the DOM type it stands in for keeps the harness honest without
+// pulling a DOM implementation into a plain Node run.
+const scrubNode = scrubTarget as unknown as HTMLElement;
+const pose = (source: AnimationTimeline, ratio: number): FakeAnimation | null =>
+  applyScrubToDOMNode(scrubNode, source, ratio) as unknown as FakeAnimation | null;
+const release = (): void => cancelScrubAnimations(scrubNode);
+
+// The posed time is clamped into the timeline, not wrapped or extrapolated.
+const posed = pose(exportTimeline, 0.5);
+assert.ok(posed, 'scrub pose returns the animation it created');
+assert.equal(posed.paused, true, 'scrub animation is paused');
+assert.equal(posed.currentTime, exportTimeline.durationMs * 0.5);
+assert.equal(pose(exportTimeline, -4)?.currentTime, 0, 'a negative ratio clamps to the start');
+assert.equal(pose(exportTimeline, Number.NaN)?.currentTime, 0, 'a non-finite ratio poses at the start');
+assert.equal(
+  pose(exportTimeline, 9)?.currentTime,
+  exportTimeline.durationMs,
+  'a ratio above one clamps to the end',
+);
+// A scrub pose is built with fill:both and no delay, so the stage holds the
+// posed frame instead of snapping back once the effect is left to run.
+assert.deepEqual(
+  scrubTarget.options.at(-1),
+  { duration: exportTimeline.durationMs, fill: 'both' },
+  'the scrub effect is built in scrub mode, not playback mode',
+);
+
+// The point of the fix: each pose cancels the one it replaced, so repeated
+// scrubbing cannot stack paused effects on the node. Before the fix the
+// cancel above found no registered animation and every tick leaked one.
+assert.equal(scrubTarget.created.length, 4);
+assert.deepEqual(
+  scrubTarget.created.map((animation) => animation.cancelCalls),
+  [1, 1, 1, 0],
+  'every superseded scrub animation is cancelled exactly once, the live one never',
+);
+
+// A node handed to cancelScrubAnimations on teardown still releases the effect
+// that applyScrubToDOMNode registered, which is what makes the function
+// self-contained for callers outside the animation engine.
+const finalPose = pose(exportTimeline, 0.25);
+release();
+assert.equal(finalPose?.cancelCalls, 1, 'teardown cancels the tracked pose');
+assert.equal(
+  scrubTarget.created.filter((animation) => animation.cancelCalls === 0).length,
+  0,
+  'no scrub animation is left un-cancelled on the node',
+);
+
+// A timeline the WAAPI cannot express yields no animation, and must not leave
+// the previously tracked one in place for a later cancel to miss.
+const tooShort = { ...exportTimeline, keyframes: exportTimeline.keyframes.slice(0, 1) };
+assert.equal(pose(tooShort, 0.5), null, 'a single-keyframe timeline poses nothing');
+release();
 
 // --- storage + migration ---------------------------------------------------
 const legacy = {
