@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { DEFAULT_PROJECT as INITIAL_PROJECT } from '@/lib/defaultProject';
 import { cubicBezierCoordinateAt, resolveTimingBezier, solveCubicBezierTimeForX } from '@/lib/bezier';
 import { formatMillisecondsAsSeconds, interpolateKeyframeProperties, resolveSegmentAtOffset } from '@/lib/cssGenerator';
 import { ExportDrawer } from '@/components/exporter/ExportDrawer';
@@ -42,7 +43,6 @@ import {
   TIMING_PRESET_LABELS,
   addTimeline,
   createKeyframePoint,
-  createProjectRecord,
   createTimeline,
   findKeyframe,
   getActiveTimeline,
@@ -87,37 +87,6 @@ const TIMING_OPTIONS: ReadonlyArray<{ value: TimingPreset; label: string }> = TI
   value,
   label: TIMING_PRESET_LABELS[value],
 }));
-
-const INITIAL_PROJECT = createProjectRecord({
-  name: 'Untitled Study',
-  description: 'A three-keyframe entrance used as the starting point.',
-  timelines: [
-    createTimeline({
-      name: 'Entrance',
-      durationMs: 1200,
-      keyframes: [
-        createKeyframePoint({
-          offset: 0,
-          timingFunction: 'ease-out',
-          properties: { transform: { translateY: 48, scaleX: 0.94, scaleY: 0.94 }, styles: { opacity: 0 } },
-        }),
-        createKeyframePoint({
-          offset: 70,
-          timingFunction: 'ease-in-out',
-          properties: {
-            transform: { translateY: -6, scaleX: 1.03, scaleY: 1.03 },
-            styles: { opacity: 1, boxShadowBlur: 56, boxShadowSpread: -14 },
-          },
-        }),
-        createKeyframePoint({
-          offset: 100,
-          timingFunction: 'ease-in-out',
-          properties: { transform: { translateY: 0, scaleX: 1, scaleY: 1 }, styles: { opacity: 1 } },
-        }),
-      ],
-    }),
-  ],
-});
 
 /** Deep comparison for the undo stack; projects are small and compared rarely. */
 function projectsEqual(a: ProjectRecord, b: ProjectRecord): boolean {

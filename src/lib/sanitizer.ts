@@ -186,31 +186,42 @@ export function buildPreviewSvgContainer(input: string, className: string): stri
 }
 
 /**
+ * Reads the `viewBox` attribute straight out of the `<svg>` open tag.
+ *
+ * This deliberately avoids a DOM round-trip. `RETURN_DOM: true` only returns
+ * the sanitized element when `RETURN_DOM_FRAGMENT` is set as well; with the
+ * fragment disabled DOMPurify hands back its internal `<body>`, so reading
+ * `viewBox` off that node silently yields `null` for every document. Parsing
+ * the attribute also keeps untrusted markup out of the DOM and makes the
+ * behaviour testable in a DOM-less environment. The name is matched
+ * case-insensitively because the HTML parser maps `viewbox` onto the SVG
+ * `viewBox` attribute when the markup is injected.
+ */
+function readViewBoxAttribute(openTag: string): string | null {
+  const match = /(?:^|\s)viewbox\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i.exec(openTag);
+  if (!match) return null;
+  return match[1] ?? match[2] ?? match[3] ?? null;
+}
+
+/**
  * Extracts the viewBox of the first `<svg>` element so the stage can preserve
  * the author's aspect ratio. Returns `null` when no usable viewBox exists.
  */
 export function extractSvgViewBox(input: string): { minX: number; minY: number; width: number; height: number } | null {
-  const purifier = getPurifier();
-  if (!purifier) return null;
-
+  if (typeof input !== 'string') return null;
   const match = SVG_OPEN_TAG_PATTERN.exec(input);
   if (!match) return null;
 
-  try {
-    const parsed = purifier.sanitize(match[0], { ...SVG_SANITIZE_CONFIG, RETURN_DOM: true }) as unknown as Element;
-    const raw = parsed.getAttribute('viewBox');
-    if (!raw) return null;
-    const parts = raw
-      .trim()
-      .split(/[\s,]+/)
-      .map((part) => Number(part));
-    if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) return null;
-    const [minX, minY, width, height] = parts;
-    if (width <= 0 || height <= 0) return null;
-    return { minX, minY, width, height };
-  } catch {
-    return null;
-  }
+  const raw = readViewBoxAttribute(match[0]);
+  if (!raw) return null;
+  const parts = raw
+    .trim()
+    .split(/[\s,]+/)
+    .map((part) => Number(part));
+  if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) return null;
+  const [minX, minY, width, height] = parts;
+  if (width <= 0 || height <= 0) return null;
+  return { minX, minY, width, height };
 }
 
 /**

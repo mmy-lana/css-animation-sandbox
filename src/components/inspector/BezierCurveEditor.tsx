@@ -37,6 +37,12 @@ const PLOT = DEFAULT_BEZIER_PLOT_BOX;
 const QUICK_PRESETS: readonly NamedTimingPreset[] = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end'];
 const HANDLE_RADIUS = 6;
 
+/** Restricts a control point to the range the editor advertises. */
+function clampTo(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) return min;
+  return Math.min(Math.max(value, min), max);
+}
+
 /**
  * Interactive cubic-bezier editor.
  *
@@ -78,11 +84,16 @@ export function BezierCurveEditor({ bezier, onChange, disabled = false, animateP
   const commit = useCallback(
     (next: CubicBezierPoints) => {
       if (disabled) return;
+      // Every path — the SVG drag, the arrow keys, the numeric fields — funnels
+      // through here, so this is the one place that guarantees a stored handle
+      // stays inside the declared limits. The plot mapping clamps X but lets Y
+      // overshoot, which would otherwise let a drag commit a value the number
+      // inputs then display as out of range.
       onChange({
-        x1: roundTo(next.x1, 3),
-        y1: roundTo(next.y1, 3),
-        x2: roundTo(next.x2, 3),
-        y2: roundTo(next.y2, 3),
+        x1: roundTo(clampTo(next.x1, X_LIMIT.min, X_LIMIT.max), 3),
+        y1: roundTo(clampTo(next.y1, Y_LIMIT.min, Y_LIMIT.max), 3),
+        x2: roundTo(clampTo(next.x2, X_LIMIT.min, X_LIMIT.max), 3),
+        y2: roundTo(clampTo(next.y2, Y_LIMIT.min, Y_LIMIT.max), 3),
       });
     },
     [disabled, onChange],

@@ -368,8 +368,11 @@ export function useAnimationEngine({
       const animation = animationRef.current;
       animationRef.current = null;
       animation?.cancel();
+      // A paused pose is held by a WAAPI animation that outlives the playing
+      // one, so it has to be released here or it keeps styling a detached node.
+      cancelScrubAnimations(targetRef.current);
     },
-    [stopFrameLoop],
+    [stopFrameLoop, targetRef],
   );
 
   return useMemo(

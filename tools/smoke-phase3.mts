@@ -178,8 +178,33 @@ if (supported) {
   assert.equal(benign.ok, false, 'a DOM-less environment never claims success');
   assert.equal(benign.reason, 'unsupported-environment', 'the reason is explicit for the UI');
   assert.equal(benign.markup, '', 'no markup leaks through a failed sanitization');
-  assert.equal(extractSvgViewBox('<svg viewBox="0 0 32 16"></svg>'), null, 'viewBox parsing also fails closed');
 }
+
+// The viewBox is read straight from the open tag, so this holds with or without
+// a DOM. It is asserted outside the `supported` branch on purpose: the previous
+// implementation asked DOMPurify's `RETURN_DOM` node for the attribute, which
+// returns its internal <body> unless RETURN_DOM_FRAGMENT is also set, so every
+// document silently produced null and only the fail-closed path was ever
+// covered by a test.
+assert.deepEqual(
+  extractSvgViewBox('<svg viewBox="0 0 32 16"><circle r="4" /></svg>'),
+  { minX: 0, minY: 0, width: 32, height: 16 },
+  'a quoted viewBox is read without a DOM',
+);
+assert.deepEqual(
+  extractSvgViewBox("<svg width='10' viewbox='-4 -8 20 10'></svg>"),
+  { minX: -4, minY: -8, width: 20, height: 10 },
+  "a single-quoted, lower-case viewBox (how the HTML parser stores it) is matched",
+);
+assert.deepEqual(
+  extractSvgViewBox('<svg viewBox="0,0,24,24"></svg>'),
+  { minX: 0, minY: 0, width: 24, height: 24 },
+  'comma separators are accepted',
+);
+assert.equal(extractSvgViewBox('<svg viewBox="0 0 32"></svg>'), null, 'a three-part viewBox is rejected');
+assert.equal(extractSvgViewBox('<svg viewBox="a b c d"></svg>'), null, 'a non-numeric viewBox is rejected');
+assert.equal(extractSvgViewBox('<svg data-viewBox="0 0 4 4"></svg>'), null, 'a prefixed attribute is not a viewBox');
+assert.equal(extractSvgViewBox('<div viewBox="0 0 4 4"></div>'), null, 'a non-svg root has no viewBox');
 
 const empty = sanitizeSvgMarkup('   ');
 assert.equal(empty.ok, false, 'empty input is a fail-closed error state');

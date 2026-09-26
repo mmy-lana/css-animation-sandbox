@@ -1176,9 +1176,13 @@ export function moveKeyframeOffset(
   }
 
   // Collision: walk outwards from the requested offset until a free slot is found.
+  // The step is re-rounded on every iteration and each candidate is rounded too:
+  // `0.01 + 0.01 + 0.01` drifts to 0.030000000000000002, which would miss an
+  // occupied 0.03 and store a second keyframe that renders as the same `3%`
+  // selector in the exported stylesheet.
   const epsilon = 0.01;
-  for (let step = epsilon; step <= maxOffset - minOffset; step += epsilon) {
-    const candidates = [clamped + step, clamped - step];
+  for (let step = epsilon; step <= maxOffset - minOffset; step = roundTo(step + epsilon, 2)) {
+    const candidates = [roundTo(clamped + step, 2), roundTo(clamped - step, 2)];
     for (const candidate of candidates) {
       if (candidate < minOffset || candidate > maxOffset) continue;
       if (occupied.has(candidate)) continue;

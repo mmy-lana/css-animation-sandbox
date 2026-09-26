@@ -18,6 +18,7 @@ import {
 import { generateTailwindV4Stylesheet } from '@/lib/tailwindFormatter';
 import { ANIMATION_PRESETS, PRESET_CATEGORY_LABELS, groupPresetsByCategory, resolveUniqueTimelineName } from '@/lib/presets';
 import { hasSvgRoot, isSanitizerSupported } from '@/lib/sanitizer';
+import { DEFAULT_PROJECT, createDefaultProject } from '@/lib/defaultProject';
 import {
   DEFAULT_EXPORT_OPTIONS,
   EXPORT_TARGETS,
@@ -33,6 +34,7 @@ import {
   validateExportOptions,
   validateKeyframePoint,
   validateProjectInvariants,
+  validateProjectRecord,
   validateTimelineTiming,
   type AnimationTimeline,
   type ExportOptions,
@@ -376,6 +378,33 @@ check('dragging a keyframe offset echoes where it actually landed', () => {
   assert.equal(findKeyframe(findTimeline(pinned.value, timeline.id)!, endpointId)?.offset, endpointOffset);
 });
 
+check('a deep collision walk stays on the offset grid', () => {
+  // The walk accumulates its step as `step += 0.01`, which drifts off the
+  // 0.01 grid. A drifted candidate misses an occupied neighbour, and the two
+  // keyframes then render as the same percentage selector in the export.
+  const dense = [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 50, 100];
+  const project = createProjectRecord({
+    timelines: [createTimeline({ keyframes: dense.map((offset) => createKeyframePoint({ offset })) })],
+  });
+  const timeline = project.timelines[0];
+  const moving = timeline.keyframes[7].id;
+
+  const result = moveKeyframeOffset(project, timeline.id, moving, 0);
+  assert.equal(result.ok, true);
+  assert.equal(result.relocated, true);
+
+  const stored = findTimeline(result.value, timeline.id)!.keyframes;
+  const offGrid = stored.filter((point) => point.offset !== Math.round(point.offset * 100) / 100);
+  assert.deepEqual(offGrid.map((point) => point.offset), [], 'no stored offset carries float drift');
+
+  // Offsets stay unique, and — the part the uniqueness check alone missed —
+  // no two of them collapse onto the same emitted percentage.
+  const offsets = stored.map((point) => point.offset);
+  assert.equal(new Set(offsets).size, offsets.length, 'no two keyframes share an offset');
+  const asPercent = offsets.map((offset) => `${offset.toFixed(2)}%`);
+  assert.equal(new Set(asPercent).size, asPercent.length, 'no two keyframes emit the same CSS selector');
+});
+
 function preset2Timeline(): AnimationTimeline {
   return ANIMATION_PRESETS[1].build();
 }
@@ -453,6 +482,34 @@ check('web-animations output is a paste-ready animate() call with the timeline t
   const frameCount = (code.match(/offset: /g) ?? []).length;
   assert.equal(frameCount, exportTimeline.keyframes.length);
   assert.equal((code.match(/easing: '/g) ?? []).length, exportTimeline.keyframes.length - 1);
+});
+
+// --- The default document, and the hydration invariant it depends on --------
+
+check('the starter document is valid and renders identically in every realm', () => {
+  // Two independent builds, the way a server render and a client render each
+  // construct the record. If any id came from `createId` the two would differ in
+  // exactly the attribute React compares during hydration (`data-keyframe-id`).
+  const serverRender = createDefaultProject();
+  const clientRender = createDefaultProject();
+  assert.equal(
+    JSON.stringify(serverRender),
+    JSON.stringify(clientRender),
+    'the starter document is not reproducible across renders',
+  );
+
+  const first = DEFAULT_PROJECT;
+  const timeline = findTimeline(first, first.activeTimelineId);
+  assert.ok(timeline, 'the starter document has an active timeline');
+  assert.deepEqual(validateProjectRecord(first), [], 'the starter document violates the record schema');
+  assert.deepEqual(validateProjectInvariants(first), [], 'the starter document violates its invariants');
+  assert.equal(
+    new Set(timeline!.keyframes.map((point) => point.id)).size,
+    timeline!.keyframes.length,
+    'starter keyframe ids are unique',
+  );
+  assert.equal(timeline!.keyframes[0].offset, 0, 'the starter timeline opens at 0%');
+  assert.equal(timeline!.keyframes[timeline!.keyframes.length - 1].offset, 100, 'the starter timeline closes at 100%');
 });
 
 // --- SVG guard for the custom-shape stage -----------------------------------
